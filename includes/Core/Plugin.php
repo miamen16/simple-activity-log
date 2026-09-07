@@ -30,6 +30,7 @@ class Plugin {
 
 		add_action( Retention::CRON_HOOK, array( 'SAL\\Core\\Retention', 'run_cleanup' ) );
 		Privacy::register();
+		SecurityDetector::register();
 
 		$this->register_loggers();
 
@@ -42,9 +43,8 @@ class Plugin {
 	}
 
 	/**
-	 * Register the built-in loggers. Third-party code (or our own future
-	 * phases) can hook 'sal_register_loggers' to add more without
-	 * touching this file.
+	 * Register the built-in loggers. Third-party code (or future modules) can
+	 * hook 'sal_register_loggers' to add more without touching this file.
 	 */
 	private function register_loggers() {
 		$this->add( new \SAL\Loggers\AuthLogger() );
