@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Retention {
 
-	const CRON_HOOK        = 'sal_cleanup_logs';
-	const DEFAULT_DAYS     = 90;
-	const OPTION_DAYS      = 'sal_retention_days';
+	const CRON_HOOK    = 'sal_cleanup_logs';
+	const DEFAULT_DAYS = 90;
+	const OPTION_DAYS  = 'sal_retention_days';
 
 	public static function schedule() {
 		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
@@ -42,7 +42,7 @@ class Retention {
 
 		global $wpdb;
 		$table  = Database::table();
-		$cutoff = gmdate( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( $days * DAY_IN_SECONDS ) );
+		$cutoff = wp_date( 'Y-m-d H:i:s', time() - ( $days * DAY_IN_SECONDS ) );
 
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE created_at < %s", $cutoff ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQLPlaceholders
 	}
