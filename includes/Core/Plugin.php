@@ -35,6 +35,7 @@ class Plugin {
 
 		if ( is_admin() ) {
 			new \SAL\Admin\LogsPage();
+			new \SAL\Admin\SecurityDashboardPage();
 			new \SAL\Admin\SecurityPage();
 			new \SAL\Admin\IncidentsPage();
 			new \SAL\Admin\SettingsPage();
