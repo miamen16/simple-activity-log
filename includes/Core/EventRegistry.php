@@ -89,7 +89,7 @@ class EventRegistry {
 			'woocommerce_order_status_changed' => array(
 				'label'    => __( 'Order status changed', 'simple-activity-log' ),
 				'category' => 'woocommerce',
-				risk'     => 25,
+				'risk'     => 25,
 			),
 			'woocommerce_refund_created' => array(
 				'label'    => __( 'Refund created', 'simple-activity-log' ),
