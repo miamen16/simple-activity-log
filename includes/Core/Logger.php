@@ -63,10 +63,11 @@ class Logger {
 			$ip_address = null;
 		}
 
-		$meta = null;
-		if ( is_array( $args['meta'] ) ) {
-			$meta = wp_json_encode( $args['meta'] );
-		}
+		$meta = is_array( $args['meta'] ) ? $args['meta'] : array();
+		$risk_score = RiskEngine::score( $action, $meta );
+		$meta['risk_score'] = $risk_score;
+		$meta['risk_level'] = RiskEngine::level( $risk_score );
+		$meta = wp_json_encode( $meta );
 
 		$inserted = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			Database::table(),
