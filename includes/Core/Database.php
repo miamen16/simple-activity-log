@@ -23,7 +23,7 @@ class Database {
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$table           = self::table();
+		$table           = esc_sql( self::table() );
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE {$table} (
@@ -47,7 +47,7 @@ class Database {
 			KEY username_created_at (username, created_at)
 		) {$charset_collate};";
 
-		dbDelta( $sql );
+		dbDelta( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		update_option( 'sal_db_version', SAL_DB_VERSION );
 	}
