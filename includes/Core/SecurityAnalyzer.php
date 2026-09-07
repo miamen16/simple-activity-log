@@ -53,7 +53,7 @@ class SecurityAnalyzer {
 			 ORDER BY attempts DESC
 			 LIMIT 100";
 
-		return $wpdb->get_results( $wpdb->prepare( $sql, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		return $wpdb->get_results( $wpdb->prepare( $sql, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
 	/**
@@ -75,7 +75,7 @@ class SecurityAnalyzer {
 			 ORDER BY attempts DESC
 			 LIMIT 100";
 
-		return $wpdb->get_results( $wpdb->prepare( $sql, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		return $wpdb->get_results( $wpdb->prepare( $sql, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
 	/**
@@ -92,7 +92,7 @@ class SecurityAnalyzer {
 			 FROM " . $table . "
 			 WHERE action = 'login_failed' AND created_at >= %s";
 
-		$row = $wpdb->get_row( $wpdb->prepare( $sql, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		$row = $wpdb->get_row( $wpdb->prepare( $sql, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
 		return array(
 			'total_attempts'     => $row ? (int) $row->total_attempts : 0,
