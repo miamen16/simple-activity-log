@@ -147,8 +147,10 @@ class SettingsLogger extends AbstractLogger {
 			foreach ( $files as $file ) {
 				$log_action = 'install' === $action ? 'plugin_installed' : 'plugin_updated';
 				$verb       = 'install' === $action
-					? __( 'Installed plugin "%s".', 'simple-activity-log' )
-					: __( 'Updated plugin "%s".', 'simple-activity-log' );
+					? /* translators: %s: plugin name */
+					__( 'Installed plugin "%s".', 'simple-activity-log' )
+					: /* translators: %s: plugin name */
+					__( 'Updated plugin "%s".', 'simple-activity-log' );
 
 				Logger::log(
 					$log_action,
@@ -162,8 +164,10 @@ class SettingsLogger extends AbstractLogger {
 			foreach ( $slugs as $slug ) {
 				$log_action = 'install' === $action ? 'theme_installed' : 'theme_updated';
 				$verb       = 'install' === $action
-					? __( 'Installed theme "%s".', 'simple-activity-log' )
-					: __( 'Updated theme "%s".', 'simple-activity-log' );
+					? /* translators: %s: theme slug */
+					__( 'Installed theme "%s".', 'simple-activity-log' )
+					: /* translators: %s: theme slug */
+					__( 'Updated theme "%s".', 'simple-activity-log' );
 
 				Logger::log(
 					$log_action,
