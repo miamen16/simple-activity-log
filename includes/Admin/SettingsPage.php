@@ -56,13 +56,17 @@ class SettingsPage {
 
 		check_admin_referer( 'sal_save_settings' );
 
-		$retention_days = isset( $_POST['sal_retention_days'] ) ? max( 0, (int) $_POST['sal_retention_days'] ) : Retention::DEFAULT_DAYS;
+		$retention_days = isset( $_POST['sal_retention_days'] )
+			? absint( wp_unslash( $_POST['sal_retention_days'] ) )
+			: Retention::DEFAULT_DAYS;
 		update_option( Retention::OPTION_DAYS, $retention_days );
 
 		$alerts_enabled = ! empty( $_POST['sal_alerts_enabled'] ) ? '1' : '0';
 		update_option( AlertManager::OPTION_ENABLED, $alerts_enabled );
 
-		$alert_email = isset( $_POST['sal_alert_email'] ) ? sanitize_email( wp_unslash( $_POST['sal_alert_email'] ) ) : '';
+		$alert_email = isset( $_POST['sal_alert_email'] )
+			? sanitize_email( wp_unslash( $_POST['sal_alert_email'] ) )
+			: '';
 		update_option( AlertManager::OPTION_EMAIL, $alert_email );
 
 		wp_safe_redirect( add_query_arg( array( 'page' => 'sal-settings', 'updated' => '1' ), admin_url( 'admin.php' ) ) );
