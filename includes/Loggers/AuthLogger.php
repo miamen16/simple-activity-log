@@ -9,10 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Logs the three core auth events: successful login, logout, and failed
- * login attempts (useful both as an activity record and as a lightweight
- * security signal — e.g. spotting repeated failed attempts for one
- * username).
+ * Logs authentication activity. Failed logins are also consumed by the
+ * security detector, which is responsible for creating incidents and alerts.
  */
 class AuthLogger extends AbstractLogger {
 
@@ -43,8 +41,7 @@ class AuthLogger extends AbstractLogger {
 
 	/**
 	 * 'wp_logout' has passed the user ID since WP 5.5. If an older WP
-	 * version fires it without an ID, fall back to the current user
-	 * (still available at this point, before the session is destroyed).
+	 * version fires it without an ID, fall back to the current user.
 	 */
 	public function on_logout( $user_id = 0 ) {
 		if ( ! $user_id ) {
@@ -69,9 +66,10 @@ class AuthLogger extends AbstractLogger {
 	}
 
 	/**
-	 * Fires on a failed login attempt. $username is whatever was typed
-	 * into the username field — it may not correspond to a real account
-	 * (that's exactly the case worth logging).
+	 * Fires on a failed login attempt. The SecurityDetector listens to the
+	 * resulting 'sal_logged' event and handles incident creation and alerts.
+	 *
+	 * @param string $username Attempted username.
 	 */
 	public function on_login_failed( $username ) {
 		Logger::log(
@@ -86,7 +84,5 @@ class AuthLogger extends AbstractLogger {
 				'username' => $username,
 			)
 		);
-
-		\SAL\Core\AlertManager::check_and_alert( Logger::get_client_ip(), $username );
 	}
 }
