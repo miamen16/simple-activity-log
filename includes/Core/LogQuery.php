@@ -50,7 +50,7 @@ class LogQuery {
 		$params[] = $per_page;
 		$params[] = $offset;
 
-		return $wpdb->get_results( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		return $wpdb->get_results( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
 	public static function count_logs( array $args = array() ) {
@@ -63,7 +63,7 @@ class LogQuery {
 
 		$sql = 'SELECT COUNT(*) FROM ' . $table . ' WHERE ' . implode( ' AND ', $where );
 
-		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
 	/**
@@ -74,7 +74,7 @@ class LogQuery {
 		$table = esc_sql( Database::table() );
 		$sql   = 'SELECT DISTINCT user_id, username FROM ' . $table . ' WHERE user_id > %d ORDER BY username ASC';
 
-		return $wpdb->get_results( $wpdb->prepare( $sql, 0 ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		return $wpdb->get_results( $wpdb->prepare( $sql, 0 ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
 	/**
@@ -85,7 +85,7 @@ class LogQuery {
 		$table = esc_sql( Database::table() );
 		$sql   = 'SELECT DISTINCT action FROM ' . $table . ' WHERE 1 = %d ORDER BY action ASC';
 
-		return $wpdb->get_col( $wpdb->prepare( $sql, 1 ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		return $wpdb->get_col( $wpdb->prepare( $sql, 1 ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
 
 	private static function build_where( array $args ) {
