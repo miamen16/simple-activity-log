@@ -1,0 +1,71 @@
+<?php
+/**
+ * Plugin Name: Simple Activity Log
+ * Plugin URI:  https://example.com/simple-activity-log
+ * Description: Logs who did what and when — logins, content changes, orders, settings, and failed login attempts.
+ * Version:     1.0.0-alpha
+ * Author:      Mohamed
+ * Text Domain: simple-activity-log
+ * Requires PHP: 7.4
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // No direct access.
+}
+
+define( 'SAL_VERSION', '1.0.0-alpha' );
+define( 'SAL_FILE', __FILE__ );
+define( 'SAL_PATH', plugin_dir_path( __FILE__ ) );
+define( 'SAL_URL', plugin_dir_url( __FILE__ ) );
+define( 'SAL_DB_VERSION', '1.0.0' );
+
+/**
+ * Simple PSR-4-ish autoloader for the SAL\ namespace.
+ * SAL\Core\Plugin        -> includes/Core/Plugin.php
+ * SAL\Loggers\AuthLogger -> includes/Loggers/AuthLogger.php
+ */
+spl_autoload_register( function ( $class ) {
+	$prefix = 'SAL\\';
+
+	if ( strpos( $class, $prefix ) !== 0 ) {
+		return;
+	}
+
+	$relative_class = substr( $class, strlen( $prefix ) );
+	$relative_path  = str_replace( '\\', '/', $relative_class ) . '.php';
+	$file           = SAL_PATH . 'includes/' . $relative_path;
+
+	if ( file_exists( $file ) ) {
+		require $file;
+	}
+} );
+
+/**
+ * Boot the plugin once all plugins are loaded.
+ */
+function sal_boot() {
+	\SAL\Core\Plugin::instance()->init();
+}
+add_action( 'plugins_loaded', 'sal_boot' );
+
+/**
+ * Activation: create the log table and schedule the daily cleanup cron.
+ */
+function sal_activate() {
+	require_once SAL_PATH . 'includes/Core/Database.php';
+	\SAL\Core\Database::install();
+
+	require_once SAL_PATH . 'includes/Core/Retention.php';
+	\SAL\Core\Retention::schedule();
+}
+register_activation_hook( __FILE__, 'sal_activate' );
+
+/**
+ * Deactivation: stop the cleanup cron (keep the data — uninstall.php
+ * handles full cleanup if the plugin is deleted).
+ */
+function sal_deactivate() {
+	require_once SAL_PATH . 'includes/Core/Retention.php';
+	\SAL\Core\Retention::unschedule();
+}
+register_deactivation_hook( __FILE__, 'sal_deactivate' );

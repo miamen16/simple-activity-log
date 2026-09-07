@@ -1,0 +1,254 @@
+.sal-wrap {
+	max-width: 1100px;
+}
+
+.sal-filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 12px 16px;
+	margin: 16px 0;
+}
+
+.sal-filters label {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 13px;
+	color: #646970;
+}
+
+.sal-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-weight: 600;
+	background: #f0f0f1;
+	color: #3c434a;
+}
+
+.sal-badge-login {
+	background: #d4f4dd;
+	color: #005c12;
+}
+
+.sal-badge-logout {
+	background: #e5e5e5;
+	color: #3c434a;
+}
+
+.sal-badge-login_failed {
+	background: #fbe4e4;
+	color: #8a1f1f;
+}
+
+.sal-badge-product_created {
+	background: #d4f4dd;
+	color: #005c12;
+}
+
+.sal-badge-product_updated {
+	background: #e0f0fb;
+	color: #0a4b78;
+}
+
+.sal-badge-product_trashed,
+.sal-badge-product_unpublished {
+	background: #fdf0d5;
+	color: #8a5a00;
+}
+
+.sal-badge-product_restored {
+	background: #e0f0fb;
+	color: #0a4b78;
+}
+
+.sal-badge-product_deleted {
+	background: #fbe4e4;
+	color: #8a1f1f;
+}
+
+.sal-badge-product_status_changed {
+	background: #f0f0f1;
+	color: #3c434a;
+}
+
+.sal-badge-order_created,
+.sal-badge-order_completed {
+	background: #d4f4dd;
+	color: #005c12;
+}
+
+.sal-badge-order_status_changed,
+.sal-badge-order_restored {
+	background: #e0f0fb;
+	color: #0a4b78;
+}
+
+.sal-badge-order_cancelled,
+.sal-badge-order_failed,
+.sal-badge-order_deleted {
+	background: #fbe4e4;
+	color: #8a1f1f;
+}
+
+.sal-badge-order_refunded,
+.sal-badge-order_trashed {
+	background: #fdf0d5;
+	color: #8a5a00;
+}
+
+.sal-badge-setting_changed {
+	background: #f0e6fb;
+	color: #4a1f8a;
+}
+
+.sal-badge-plugin_activated,
+.sal-badge-plugin_installed,
+.sal-badge-theme_installed {
+	background: #d4f4dd;
+	color: #005c12;
+}
+
+.sal-badge-plugin_updated,
+.sal-badge-theme_updated,
+.sal-badge-theme_switched,
+.sal-badge-core_updated {
+	background: #e0f0fb;
+	color: #0a4b78;
+}
+
+.sal-badge-plugin_deactivated {
+	background: #f0f0f1;
+	color: #3c434a;
+}
+
+.sal-badge-plugin_deleted,
+.sal-badge-theme_deleted {
+	background: #fbe4e4;
+	color: #8a1f1f;
+}
+
+.sal-badge-user_created {
+	background: #d4f4dd;
+	color: #005c12;
+}
+
+.sal-badge-user_deleted {
+	background: #fbe4e4;
+	color: #8a1f1f;
+}
+
+.sal-badge-user_role_changed,
+.sal-badge-user_password_reset {
+	background: #fdf0d5;
+	color: #8a5a00;
+}
+
+.sal-badge-user_updated,
+.sal-badge-product_renamed,
+.sal-badge-product_field_changed {
+	background: #e0f0fb;
+	color: #0a4b78;
+}
+
+.sal-widget-alert {
+	background: #fdf0d5;
+	color: #8a5a00;
+	padding: 8px 12px;
+	border-radius: 4px;
+	margin: 0 0 12px;
+}
+
+.sal-widget-alert-danger {
+	background: #fbe4e4;
+	color: #8a1f1f;
+}
+
+.sal-widget-list {
+	margin: 0;
+}
+
+.sal-widget-list li {
+	padding: 6px 0;
+	border-bottom: 1px solid #f0f0f1;
+	font-size: 13px;
+}
+
+.sal-widget-list li:last-child {
+	border-bottom: none;
+}
+
+.sal-widget-time {
+	display: block;
+	color: #646970;
+	font-size: 11px;
+}
+
+.sal-widget-footer {
+	margin-top: 8px;
+	text-align: right;
+}
+
+.sal-window-tabs {
+	display: flex;
+	gap: 8px;
+	margin: 16px 0;
+}
+
+.sal-security-summary {
+	display: flex;
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.sal-summary-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 16px 24px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 140px;
+}
+
+.sal-summary-number {
+	font-size: 28px;
+	font-weight: 700;
+	color: #2271b1;
+}
+
+.sal-summary-label {
+	font-size: 13px;
+	color: #646970;
+	margin-top: 4px;
+}
+
+.sal-row-suspicious {
+	background: #fbe4e4 !important;
+}
+
+.sal-pagination {
+	margin: 16px 0;
+}
+
+.sal-pagination .page-numbers {
+	display: inline-block;
+	padding: 4px 10px;
+	margin-right: 4px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	text-decoration: none;
+}
+
+.sal-pagination .page-numbers.current {
+	background: #2271b1;
+	color: #fff;
+	border-color: #2271b1;
+}
