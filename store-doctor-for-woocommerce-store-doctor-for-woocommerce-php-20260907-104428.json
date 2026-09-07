@@ -1,0 +1,28 @@
+{
+    "generated_at": "2026-09-07 10:44:28",
+    "plugin": "Store Doctor for WooCommerce",
+    "results": {
+        "includes/Core/FixManager.php": [
+            {
+                "message": "Unescaped parameter $table used in $wpdb-&gt;get_results()\\n$table assigned unsafely at line 98.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=store-doctor-for-woocommerce%2Fstore-doctor-for-woocommerce.php&file=store-doctor-for-woocommerce%2Fincludes%2FCore%2FFixManager.php&line=99",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 99,
+                "column": 18
+            },
+            {
+                "message": "Unescaped parameter $table used in $wpdb-&gt;get_results()\\n$table assigned unsafely at line 124.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=store-doctor-for-woocommerce%2Fstore-doctor-for-woocommerce.php&file=store-doctor-for-woocommerce%2Fincludes%2FCore%2FFixManager.php&line=125",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 125,
+                "column": 17
+            }
+        ]
+    }
+}
