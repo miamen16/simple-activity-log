@@ -9,7 +9,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
-$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}sal_logs" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+$table = esc_sql( $wpdb->prefix . 'sal_logs' );
+$wpdb->query( "DROP TABLE IF EXISTS {$table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 delete_option( 'sal_db_version' );
 delete_option( 'sal_retention_days' );
