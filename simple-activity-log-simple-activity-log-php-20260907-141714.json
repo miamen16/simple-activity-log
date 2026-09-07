@@ -1,0 +1,222 @@
+{
+    "generated_at": "2026-09-07 14:17:14",
+    "plugin": "Simple Activity Log",
+    "results": {
+        ".gitignore": [
+            {
+                "message": "Hidden files are not permitted.",
+                "code": "hidden_files",
+                "link": null,
+                "docs": "",
+                "severity": 8,
+                "type": "ERROR",
+                "line": 0,
+                "column": 0
+            }
+        ],
+        "phpcs.xml.dist": [
+            {
+                "message": "Application files are not permitted.",
+                "code": "application_detected",
+                "link": null,
+                "docs": "",
+                "severity": 8,
+                "type": "ERROR",
+                "line": 0,
+                "column": 0
+            }
+        ],
+        "includes/Core/LogQuery.php": [
+            {
+                "message": "Unescaped parameter $sql used in $wpdb-&gt;get_results()\\n$sql assigned unsafely at line 48.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=54",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 54,
+                "column": 17
+            },
+            {
+                "message": "Use placeholders and $wpdb->prepare(); found $sql",
+                "code": "WordPress.DB.PreparedSQL.NotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=54",
+                "docs": "",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 54,
+                "column": 46
+            },
+            {
+                "message": "Unescaped parameter $sql used in $wpdb-&gt;get_var()\\n$sql assigned unsafely at line 65.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=67",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 67,
+                "column": 23
+            },
+            {
+                "message": "Use placeholders and $wpdb->prepare(); found $sql",
+                "code": "WordPress.DB.PreparedSQL.NotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=67",
+                "docs": "",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 67,
+                "column": 48
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$table} at &quot;SELECT DISTINCT user_id, username FROM {$table} WHERE user_id &gt; 0 ORDER BY username ASC&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=78",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 78,
+                "column": 4
+            }
+        ],
+        ".github": [
+            {
+                "message": "GitHub workflow directory \".github\" detected. This directory should not be included in production plugins.",
+                "code": "github_directory",
+                "link": null,
+                "docs": "",
+                "severity": 9,
+                "type": "WARNING",
+                "line": 0,
+                "column": 0
+            }
+        ],
+        "AUDIT.md": [
+            {
+                "message": "Unexpected markdown file \"AUDIT.md\" detected in plugin root. Only specific markdown files are expected in production plugins.",
+                "code": "unexpected_markdown_file",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2FAUDIT.md",
+                "docs": "",
+                "severity": 9,
+                "type": "WARNING",
+                "line": 0,
+                "column": 0
+            }
+        ],
+        "includes/Core/AlertManager.php": [
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$table} at &quot;SELECT COUNT(*) FROM {$table} WHERE action = &#039;login_failed&#039; AND {$column} = %s AND created_at &gt;= %s&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FAlertManager.php&line=92",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 92,
+                "column": 4
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$column} at &quot;SELECT COUNT(*) FROM {$table} WHERE action = &#039;login_failed&#039; AND {$column} = %s AND created_at &gt;= %s&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FAlertManager.php&line=92",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 92,
+                "column": 4
+            }
+        ],
+        "includes/Core/SecurityAnalyzer.php": [
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$table} at \\t\\t\\t FROM {$table}\\n",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FSecurityAnalyzer.php&line=52",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 52,
+                "column": 1
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$table} at \\t\\t\\t FROM {$table}\\n",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FSecurityAnalyzer.php&line=76",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 76,
+                "column": 1
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$table} at \\t\\t\\t FROM {$table}\\n",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FSecurityAnalyzer.php&line=98",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 98,
+                "column": 1
+            }
+        ],
+        "includes/Core/Privacy.php": [
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FPrivacy.php&line=132",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 132,
+                "column": 18
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FPrivacy.php&line=132",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 132,
+                "column": 18
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$table} at &quot;SELECT id FROM {$table} WHERE user_id = %d OR username = %s ORDER BY id ASC LIMIT %d&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FPrivacy.php&line=133",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 133,
+                "column": 4
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FPrivacy.php&line=172",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 172,
+                "column": 16
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FPrivacy.php&line=172",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 172,
+                "column": 16
+            },
+            {
+                "message": "Use placeholders and $wpdb-&gt;prepare(); found interpolated variable {$table} at &quot;SELECT created_at, action, message, ip_address, user_agent FROM {$table} WHERE user_id = %d OR username = %s ORDER BY id ASC LIMIT %d OFFSET %d&quot;",
+                "code": "WordPress.DB.PreparedSQL.InterpolatedNotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FPrivacy.php&line=173",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 173,
+                "column": 4
+            }
+        ]
+    }
+}
