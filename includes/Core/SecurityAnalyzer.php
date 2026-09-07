@@ -113,9 +113,10 @@ class SecurityAnalyzer {
 
 	/**
 	 * created_at is stored via current_time('mysql') (site-local time),
-	 * so the cutoff must be computed the same way to compare correctly.
+	 * so the cutoff must be generated in the same site timezone.
 	 */
 	private static function since( $hours ) {
-		return gmdate( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( (int) $hours * HOUR_IN_SECONDS ) );
+		$hours = max( 0, (int) $hours );
+		return wp_date( 'Y-m-d H:i:s', time() - ( $hours * HOUR_IN_SECONDS ) );
 	}
 }
