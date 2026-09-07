@@ -4,6 +4,7 @@ namespace SAL\Admin;
 
 use SAL\Core\Retention;
 use SAL\Core\AlertManager;
+use SAL\Core\AlertPolicy;
 use SAL\Core\SecurityAnalyzer;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -11,10 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * "Settings" submenu — retention window and email alert configuration.
- * A plain admin_post form handler, matching the style already used for
- * CSV export, rather than the full Settings API (simpler for a handful
- * of fields).
+ * Settings page for retention and security alerts.
  */
 class SettingsPage {
 
@@ -26,14 +24,7 @@ class SettingsPage {
 	}
 
 	public function register_menu() {
-		add_submenu_page(
-			'sal-logs',
-			__( 'Settings', 'simple-activity-log' ),
-			__( 'Settings', 'simple-activity-log' ),
-			self::CAPABILITY,
-			'sal-settings',
-			array( $this, 'render' )
-		);
+		add_submenu_page( 'sal-logs', __( 'Settings', 'simple-activity-log' ), __( 'Settings', 'simple-activity-log' ), self::CAPABILITY, 'sal-settings', array( $this, 'render' ) );
 	}
 
 	public function render() {
@@ -45,6 +36,7 @@ class SettingsPage {
 		$alerts_enabled = AlertManager::is_enabled();
 		$alert_email    = get_option( AlertManager::OPTION_EMAIL, '' );
 		$threshold      = SecurityAnalyzer::threshold();
+		$alert_settings = AlertPolicy::settings();
 
 		include SAL_PATH . 'templates/settings.php';
 	}
@@ -56,20 +48,25 @@ class SettingsPage {
 
 		check_admin_referer( 'sal_save_settings' );
 
-		$retention_days = isset( $_POST['sal_retention_days'] )
-			? absint( wp_unslash( $_POST['sal_retention_days'] ) )
-			: Retention::DEFAULT_DAYS;
+		$retention_days = isset( $_POST['sal_retention_days'] ) ? absint( wp_unslash( $_POST['sal_retention_days'] ) ) : Retention::DEFAULT_DAYS;
 		update_option( Retention::OPTION_DAYS, $retention_days );
 
-		$alerts_enabled = isset( $_POST['sal_alerts_enabled'] )
-			? ( '1' === sanitize_text_field( wp_unslash( $_POST['sal_alerts_enabled'] ) ) ? '1' : '0' )
-			: '0';
+		$alerts_enabled = isset( $_POST['sal_alerts_enabled'] ) ? ( '1' === sanitize_text_field( wp_unslash( $_POST['sal_alerts_enabled'] ) ) ? '1' : '0' ) : '0';
 		update_option( AlertManager::OPTION_ENABLED, $alerts_enabled );
 
-		$alert_email = isset( $_POST['sal_alert_email'] )
-			? sanitize_email( wp_unslash( $_POST['sal_alert_email'] ) )
-			: '';
+		$alert_email = isset( $_POST['sal_alert_email'] ) ? sanitize_email( wp_unslash( $_POST['sal_alert_email'] ) ) : '';
 		update_option( AlertManager::OPTION_EMAIL, $alert_email );
+
+		$allowed_severities = array( 'medium', 'high', 'critical' );
+		$min_severity = isset( $_POST['sal_alert_min_severity'] ) ? sanitize_key( wp_unslash( $_POST['sal_alert_min_severity'] ) ) : 'high';
+		if ( ! in_array( $min_severity, $allowed_severities, true ) ) {
+			$min_severity = 'high';
+		}
+		update_option( 'sal_alert_min_severity', $min_severity );
+
+		$cooldown = isset( $_POST['sal_alert_cooldown_minutes'] ) ? absint( wp_unslash( $_POST['sal_alert_cooldown_minutes'] ) ) : 60;
+		$cooldown = max( 5, min( 1440, $cooldown ) );
+		update_option( 'sal_alert_cooldown_minutes', $cooldown );
 
 		wp_safe_redirect( add_query_arg( array( 'page' => 'sal-settings', 'updated' => '1' ), admin_url( 'admin.php' ) ) );
 		exit;
