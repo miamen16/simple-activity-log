@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<ruleset name="Simple Activity Log">
+    <description>WordPress Coding Standards for Simple Activity Log.</description>
+
+    <file>simple-activity-log.php</file>
+    <file>includes</file>
+    <file>templates</file>
+    <file>uninstall.php</file>
+
+    <arg name="basepath" value="."/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="80"/>
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <rule ref="WordPress"/>
+
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array" value="sal"/>
+        </properties>
+    </rule>
+
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" value="simple-activity-log"/>
+        </properties>
+    </rule>
+
+    <exclude-pattern>/vendor/*</exclude-pattern>
+</ruleset>
