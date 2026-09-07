@@ -38,6 +38,7 @@ class Plugin {
 			new \SAL\Admin\SecurityDashboardPage();
 			new \SAL\Admin\SecurityPage();
 			new \SAL\Admin\IncidentsPage();
+			new \SAL\Admin\InvestigationPage();
 			new \SAL\Admin\SettingsPage();
 			new \SAL\Admin\DashboardWidget();
 		}
