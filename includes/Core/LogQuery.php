@@ -67,6 +67,59 @@ class LogQuery {
 	}
 
 	/**
+	 * Get recent security detection events.
+	 *
+	 * @param int $hours Number of hours to inspect.
+	 * @param int $limit Maximum number of rows.
+	 * @return array
+	 */
+	public static function get_security_events( $hours = 24, $limit = 50 ) {
+		global $wpdb;
+		$table = esc_sql( Database::table() );
+		$hours = max( 1, min( 720, (int) $hours ) );
+		$limit = max( 1, min( 200, (int) $limit ) );
+		$since = wp_date( 'Y-m-d H:i:s', time() - ( $hours * HOUR_IN_SECONDS ) );
+
+		$sql = 'SELECT * FROM ' . $table
+			. ' WHERE action = %s AND created_at >= %s'
+			. ' ORDER BY created_at DESC, id DESC LIMIT %d';
+
+		return $wpdb->get_results(
+			$wpdb->prepare( $sql, 'suspicious_activity', $since, $limit )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
+	}
+
+	/**
+	 * Get a compact security-event summary for a time window.
+	 *
+	 * @param int $hours Number of hours to inspect.
+	 * @return array
+	 */
+	public static function get_security_summary( $hours = 24 ) {
+		$events = self::get_security_events( $hours, 200 );
+		$summary = array(
+			'total'    => count( $events ),
+			'critical' => 0,
+			'high'     => 0,
+			'medium'   => 0,
+			'low'      => 0,
+		);
+
+		foreach ( $events as $event ) {
+			$meta = json_decode( (string) $event->meta, true );
+			$level = is_array( $meta ) && ! empty( $meta['risk_level'] )
+				? sanitize_key( $meta['risk_level'] )
+				: 'low';
+
+			if ( isset( $summary[ $level ] ) ) {
+				$summary[ $level ]++;
+			}
+		}
+
+		return $summary;
+	}
+
+	/**
 	 * Distinct users who have at least one log entry, for the filter dropdown.
 	 */
 	public static function get_logged_users() {
