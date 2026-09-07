@@ -41,7 +41,10 @@ class Database {
 			PRIMARY KEY  (id),
 			KEY user_id (user_id),
 			KEY action (action),
-			KEY created_at (created_at)
+			KEY created_at (created_at),
+			KEY action_created_at (action, created_at),
+			KEY ip_created_at (ip_address, created_at),
+			KEY username_created_at (username, created_at)
 		) {$charset_collate};";
 
 		dbDelta( $sql );
