@@ -44,18 +44,16 @@ class SecurityAnalyzer {
 		global $wpdb;
 		$table = esc_sql( Database::table() );
 		$since = self::since( $hours );
-
-		return $wpdb->get_results( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
-			"SELECT ip_address, COUNT(*) as attempts, COUNT(DISTINCT username) as distinct_usernames,
+		$sql   = "SELECT ip_address, COUNT(*) as attempts, COUNT(DISTINCT username) as distinct_usernames,
 				GROUP_CONCAT(DISTINCT username ORDER BY username SEPARATOR ', ') as usernames_tried,
 				MAX(created_at) as last_attempt
-			 FROM {$table}
+			 FROM " . $table . "
 			 WHERE action = 'login_failed' AND created_at >= %s AND ip_address IS NOT NULL AND ip_address != ''
 			 GROUP BY ip_address
 			 ORDER BY attempts DESC
-			 LIMIT 100",
-			$since
-		) );
+			 LIMIT 100";
+
+		return $wpdb->get_results( $wpdb->prepare( $sql, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 	}
 
 	/**
@@ -69,17 +67,15 @@ class SecurityAnalyzer {
 		global $wpdb;
 		$table = esc_sql( Database::table() );
 		$since = self::since( $hours );
-
-		return $wpdb->get_results( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
-			"SELECT username, COUNT(*) as attempts, COUNT(DISTINCT ip_address) as distinct_ips,
+		$sql   = "SELECT username, COUNT(*) as attempts, COUNT(DISTINCT ip_address) as distinct_ips,
 				MAX(created_at) as last_attempt
-			 FROM {$table}
+			 FROM " . $table . "
 			 WHERE action = 'login_failed' AND created_at >= %s AND username IS NOT NULL AND username != ''
 			 GROUP BY username
 			 ORDER BY attempts DESC
-			 LIMIT 100",
-			$since
-		) );
+			 LIMIT 100";
+
+		return $wpdb->get_results( $wpdb->prepare( $sql, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 	}
 
 	/**
@@ -90,15 +86,13 @@ class SecurityAnalyzer {
 		global $wpdb;
 		$table = esc_sql( Database::table() );
 		$since = self::since( $hours );
-
-		$row = $wpdb->get_row( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
-			"SELECT COUNT(*) as total_attempts,
+		$sql   = "SELECT COUNT(*) as total_attempts,
 				COUNT(DISTINCT ip_address) as distinct_ips,
 				COUNT(DISTINCT username) as distinct_usernames
-			 FROM {$table}
-			 WHERE action = 'login_failed' AND created_at >= %s",
-			$since
-		) );
+			 FROM " . $table . "
+			 WHERE action = 'login_failed' AND created_at >= %s";
+
+		$row = $wpdb->get_row( $wpdb->prepare( $sql, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 
 		return array(
 			'total_attempts'     => $row ? (int) $row->total_attempts : 0,
