@@ -2,25 +2,32 @@
 
 ## Scope
 
-Reviewed the `main` branch of Simple Activity Log across bootstrap/autoloading, database lifecycle, logging, security analysis, admin pages, templates, WooCommerce integration, retention, uninstall, and WordPress.org readiness.
+Reviewed the `main` branch of Simple Activity Log across bootstrap/autoloading, database lifecycle, logging, security analysis, admin pages, templates, WooCommerce integration, retention, uninstall, privacy handling, and WordPress.org readiness.
 
 ## Findings and status
 
 ### High priority — fixed
 
-1. **Timezone cutoff inconsistency — FIXED.** `created_at` is stored in the WordPress site timezone, so retention and security lookback cutoffs now use `wp_date()` in the same timezone instead of mixing site-local timestamps with `gmdate()`.
+1. **Timezone cutoff inconsistency — FIXED.** `created_at` is stored in the WordPress site timezone, so retention, security lookback, and alert lookback cutoffs now use `wp_date()` in the same timezone instead of mixing site-local timestamps with UTC formatting.
 2. **Log-query indexing — FIXED.** Added composite indexes for `(action, created_at)`, `(ip_address, created_at)`, and `(username, created_at)`, and bumped the database schema version to `1.0.1` so existing installations receive the migration through `dbDelta()`.
 
-### Medium priority — pending release preparation
+### Release-readiness work — completed in code
 
-3. **Release metadata is incomplete for WordPress.org** — the main plugin header does not declare `Requires at least` or a GPL-compatible `License`, while `Plugin URI` still points to an example domain.
-4. **readme.txt is incomplete for a public directory submission** — it lacks the standard WordPress.org fields such as `Requires at least`, `Tested up to`, `License`, and `License URI`.
-5. **No automated CI/test suite is present** — code-level review cannot replace running PHP lint, PHPCS/WordPress Coding Standards, Plugin Check, and functional tests against supported WordPress/WooCommerce versions.
+3. **Plugin header — FIXED.** Added `Requires at least`, `Requires PHP`, GPL-compatible license metadata, author URI, and a real project URI. Version is now `1.0.0`.
+4. **readme.txt — FIXED.** Added WordPress.org metadata, installation instructions, privacy/security notes, FAQ, changelog, upgrade notice, WooCommerce compatibility notes, and extension examples.
+5. **License — FIXED.** Added a GPL-2.0-or-later `LICENSE` file.
+6. **CI tooling — ADDED.** Added Composer tooling, WordPress Coding Standards configuration, PHP syntax checks, PHP compatibility checks, and a WordPress Plugin Check workflow targeting WordPress 7.1.
+7. **Privacy tools — ADDED.** Added WordPress personal-data exporter and eraser integration for activity records associated with a registered user's email address.
+
+### Remaining validation
+
+8. **CI execution — PENDING.** GitHub Actions runs are being created but the connected repository currently reports the jobs as failed before any workflow steps execute, so no PHPCS/Plugin Check result can honestly be reported as 0/0 yet.
+9. **Functional runtime tests — PENDING.** A real WordPress/WooCommerce test pass is still required for product events, order events, HPOS, multisite behavior, privacy erasure/export, retention, and CSV export.
+10. **WordPress.org submission validation — PENDING.** The source metadata is prepared, but final submission validation should be performed after the CI/runtime checks are green.
 
 ### Low priority / maintainability
 
-6. The plugin is still marked `1.0.0-alpha`; release metadata should be finalized only after testing on a declared support matrix.
-7. CSV export is now bounded by batches, but it still uses OFFSET pagination; a future keyset/cursor export would scale better for very large audit tables.
+11. CSV export is batch-bounded, but it still uses OFFSET pagination; a future keyset/cursor export would scale better for very large audit tables.
 
 ## Security review
 
@@ -32,6 +39,7 @@ Reviewed the `main` branch of Simple Activity Log across bootstrap/autoloading, 
 - Output in the reviewed admin templates is escaped.
 - Password values are not logged.
 - WooCommerce order logging uses WooCommerce APIs and is gated on WooCommerce being active.
+- Personal-data exporter and eraser hooks are registered for activity records associated with registered users.
 
 ## Functional review
 
@@ -40,15 +48,15 @@ Reviewed the `main` branch of Simple Activity Log across bootstrap/autoloading, 
 - User, plugin, theme, settings, authentication, and WooCommerce order events are routed through the central Logger.
 - Uninstall removes the custom log table/options and scheduled cleanup hook.
 
-## Recommended validation before release
+## Validation checklist
 
-1. `php -l` against every PHP file.
-2. PHPCS with WordPress Coding Standards.
-3. WordPress Plugin Check.
-4. PHP 7.4 and current supported PHP versions.
-5. Current WordPress plus at least one supported previous major version.
-6. WooCommerce legacy order storage and HPOS.
-7. Multisite activation/deactivation behavior.
-8. Large-log performance test and CSV export test.
-9. Security regression tests for admin capability/nonce boundaries.
-10. WordPress.org readme/header validation.
+1. `php -l` against every PHP file — CI configured.
+2. PHPCS with WordPress Coding Standards — CI configured.
+3. PHPCompatibilityWP against PHP 7.4+ — CI configured.
+4. WordPress Plugin Check — CI configured for WordPress 7.1.
+5. Current WordPress plus supported previous major versions — runtime testing pending.
+6. WooCommerce legacy order storage and HPOS — runtime testing pending.
+7. Multisite activation/deactivation behavior — runtime testing pending.
+8. Large-log performance and CSV export — runtime testing pending.
+9. Privacy export/erase behavior — runtime testing pending.
+10. WordPress.org readme/header validation — source preparation complete; final validator pass pending.
