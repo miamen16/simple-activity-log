@@ -29,6 +29,7 @@ class Plugin {
 		Database::maybe_upgrade();
 
 		add_action( Retention::CRON_HOOK, array( 'SAL\\Core\\Retention', 'run_cleanup' ) );
+		Privacy::register();
 
 		$this->register_loggers();
 
