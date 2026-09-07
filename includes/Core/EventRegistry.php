@@ -21,82 +21,82 @@ class EventRegistry {
 	 */
 	public static function all() {
 		$events = array(
-			'auth.login' => array(
+			'auth_login' => array(
 				'label'    => __( 'Login', 'simple-activity-log' ),
 				'category' => 'authentication',
 				'risk'     => 10,
 			),
-			'auth.logout' => array(
+			'auth_logout' => array(
 				'label'    => __( 'Logout', 'simple-activity-log' ),
 				'category' => 'authentication',
 				'risk'     => 0,
 			),
-			'auth.login_failed' => array(
+			'auth_login_failed' => array(
 				'label'    => __( 'Failed login', 'simple-activity-log' ),
 				'category' => 'authentication',
 				'risk'     => 30,
 			),
-			'user.created' => array(
+			'user_created' => array(
 				'label'    => __( 'User created', 'simple-activity-log' ),
 				'category' => 'users',
 				'risk'     => 20,
 			),
-			'user.deleted' => array(
+			'user_deleted' => array(
 				'label'    => __( 'User deleted', 'simple-activity-log' ),
 				'category' => 'users',
 				'risk'     => 60,
 			),
-			'user.role_changed' => array(
+			'user_role_changed' => array(
 				'label'    => __( 'User role changed', 'simple-activity-log' ),
 				'category' => 'users',
 				'risk'     => 70,
 			),
-			'post.created' => array(
+			'post_created' => array(
 				'label'    => __( 'Content created', 'simple-activity-log' ),
 				'category' => 'content',
 				'risk'     => 5,
 			),
-			'post.updated' => array(
+			'post_updated' => array(
 				'label'    => __( 'Content updated', 'simple-activity-log' ),
 				'category' => 'content',
 				'risk'     => 10,
 			),
-			'post.deleted' => array(
+			'post_deleted' => array(
 				'label'    => __( 'Content deleted', 'simple-activity-log' ),
 				'category' => 'content',
 				'risk'     => 35,
 			),
-			'plugin.activated' => array(
+			'plugin_activated' => array(
 				'label'    => __( 'Plugin activated', 'simple-activity-log' ),
 				'category' => 'system',
 				'risk'     => 30,
 			),
-			'plugin.deactivated' => array(
+			'plugin_deactivated' => array(
 				'label'    => __( 'Plugin deactivated', 'simple-activity-log' ),
 				'category' => 'system',
 				'risk'     => 50,
 			),
-			'option.updated' => array(
+			'option_updated' => array(
 				'label'    => __( 'Setting updated', 'simple-activity-log' ),
 				'category' => 'settings',
 				'risk'     => 20,
 			),
-			'woocommerce.order_created' => array(
+			'woocommerce_order_created' => array(
 				'label'    => __( 'Order created', 'simple-activity-log' ),
 				'category' => 'woocommerce',
 				'risk'     => 5,
 			),
-			'woocommerce.order_status_changed' => array(
+			'woocommerce_order_status_changed' => array(
 				'label'    => __( 'Order status changed', 'simple-activity-log' ),
 				'category' => 'woocommerce',
-				'risk'     => 25,
+				risk'     => 25,
 			),
-			'woocommerce.refund_created' => array(
+			'woocommerce_refund_created' => array(
 				'label'    => __( 'Refund created', 'simple-activity-log' ),
 				'category' => 'woocommerce',
 				'risk'     => 40,
 			),
-			'security.suspicious_activity' => array(
+			'security_suspicious_activity' => array(
 				'label'    => __( 'Suspicious activity', 'simple-activity-log' ),
 				'category' => 'security',
 				'risk'     => 80,
