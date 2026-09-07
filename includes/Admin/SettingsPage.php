@@ -61,7 +61,9 @@ class SettingsPage {
 			: Retention::DEFAULT_DAYS;
 		update_option( Retention::OPTION_DAYS, $retention_days );
 
-		$alerts_enabled = ! empty( $_POST['sal_alerts_enabled'] ) ? '1' : '0';
+		$alerts_enabled = isset( $_POST['sal_alerts_enabled'] )
+			? ( '1' === sanitize_text_field( wp_unslash( $_POST['sal_alerts_enabled'] ) ) ? '1' : '0' )
+			: '0';
 		update_option( AlertManager::OPTION_ENABLED, $alerts_enabled );
 
 		$alert_email = isset( $_POST['sal_alert_email'] )
