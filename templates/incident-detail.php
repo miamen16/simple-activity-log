@@ -15,6 +15,8 @@ $format_date = static function ( $value ) {
 
 $severity = sanitize_key( $incident->severity );
 $status   = sanitize_key( $incident->status );
+$ip_url   = admin_url( 'admin.php?page=sal-investigation&type=ip&value=' . rawurlencode( $incident->ip_address ) );
+$user_url = admin_url( 'admin.php?page=sal-investigation&type=username&value=' . rawurlencode( $incident->username ) );
 ?>
 <div class="wrap sal-wrap">
 	<p><a href="<?php echo esc_url( admin_url( 'admin.php?page=sal-incidents' ) ); ?>">&larr; <?php esc_html_e( 'Back to incidents', 'simple-activity-log' ); ?></a></p>
@@ -42,12 +44,13 @@ $status   = sanitize_key( $incident->status );
 			<h2><?php esc_html_e( 'Incident context', 'simple-activity-log' ); ?></h2>
 			<table class="widefat striped">
 				<tbody>
-					<tr><th><?php esc_html_e( 'Username', 'simple-activity-log' ); ?></th><td><?php echo esc_html( $incident->username ?: '—' ); ?></td></tr>
-					<tr><th><?php esc_html_e( 'IP Address', 'simple-activity-log' ); ?></th><td><code><?php echo esc_html( $incident->ip_address ?: '—' ); ?></code></td></tr>
+					<tr><th><?php esc_html_e( 'Username', 'simple-activity-log' ); ?></th><td><?php if ( $incident->username ) : ?><a href="<?php echo esc_url( $user_url ); ?>"><?php echo esc_html( $incident->username ); ?></a><?php else : ?>—<?php endif; ?></td></tr>
+					<tr><th><?php esc_html_e( 'IP Address', 'simple-activity-log' ); ?></th><td><?php if ( $incident->ip_address ) : ?><a href="<?php echo esc_url( $ip_url ); ?>"><code><?php echo esc_html( $incident->ip_address ); ?></code></a><?php else : ?>—<?php endif; ?></td></tr>
 					<tr><th><?php esc_html_e( 'Detection type', 'simple-activity-log' ); ?></th><td><code><?php echo esc_html( $incident->type ); ?></code></td></tr>
 					<tr><th><?php esc_html_e( 'Source log ID', 'simple-activity-log' ); ?></th><td><?php echo esc_html( $incident->source_log_id ? '#' . absint( $incident->source_log_id ) : '—' ); ?></td></tr>
 				</tbody>
 			</table>
+			<p><a class="button" href="<?php echo esc_url( $ip_url ); ?>"><?php esc_html_e( 'Investigate IP', 'simple-activity-log' ); ?></a> <?php if ( $incident->username ) : ?><a class="button" href="<?php echo esc_url( $user_url ); ?>"><?php esc_html_e( 'Investigate User', 'simple-activity-log' ); ?></a><?php endif; ?></p>
 		</div>
 
 		<div class="sal-dashboard-card">
