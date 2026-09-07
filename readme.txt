@@ -52,12 +52,12 @@ WooCommerce logging is enabled automatically when WooCommerce is active.
 
 == Architecture ==
 
-`simple-activity-log.php` bootstraps the plugin and handles activation/deactivation.
+`simple-activity-log.php` bootstraps the plugin, exposes the public `sal_log()` helper, and handles activation/deactivation.
 
 `includes/Core/`
 
 * `Database.php` — creates and upgrades the single `wp_sal_logs` table.
-* `Logger.php` — central write API used by every logger.
+* `Logger.php` — central write API used by every logger and third-party integration.
 * `LogQuery.php` — filtering, pagination, counts, and export reads.
 * `Plugin.php` — registers loggers and admin components.
 * `SecurityAnalyzer.php` — failed-login clustering by IP and username.
@@ -86,10 +86,26 @@ WooCommerce logging is enabled automatically when WooCommerce is active.
 Third-party code can register additional logger classes without modifying the core plugin:
 
     add_action( 'sal_register_loggers', function( $plugin ) {
-        $plugin->add( new \YourNamespace\ProductLogger() );
+        $plugin->add( new \\YourNamespace\\ProductLogger() );
     } );
 
-The central logging API is `SAL\\Core\\Logger::log()`.
+The simplest way to record a custom event is the public `sal_log()` helper:
+
+    sal_log( 'custom_action', 'A custom action occurred', array(
+        'object_type' => 'product',
+        'object_id'   => 123,
+        'meta'        => array(
+            'source' => 'my-plugin',
+        ),
+    ) );
+
+`sal_log()` returns the inserted log ID on success or `false` when the event cannot be stored.
+
+After an event is stored, the `sal_logged` action fires with the log ID, action, message, and event context:
+
+    add_action( 'sal_logged', function( $log_id, $action, $message, $args ) {
+        // React to a successfully stored event.
+    }, 10, 4 );
 
 == Filters ==
 
@@ -144,6 +160,7 @@ The order logger uses WooCommerce order-level hooks and is designed to work with
 * Added WordPress authentication, product, order, settings, user, and security logging.
 * Added retention, suspicious-login alerts, dashboard activity widget, filters, and CSV export.
 * Added WordPress personal-data export and erasure integration.
+* Added a public custom-event logging API for third-party integrations.
 * Added WordPress.org release metadata and automated quality checks.
 
 == Upgrade Notice ==
