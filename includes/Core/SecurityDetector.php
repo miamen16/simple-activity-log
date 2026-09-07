@@ -8,49 +8,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Detects suspicious authentication patterns from recorded activity.
- *
- * Detection is intentionally read-only: it never blocks authentication.
- * A detection creates a single security event which can then be consumed by
- * the alert, dashboard, and integration layers.
  */
 class SecurityDetector {
 
 	const DEFAULT_WINDOW_HOURS = 1;
 	const DEFAULT_THRESHOLD    = 5;
 
-	/**
-	 * Register the detector against the central logging event.
-	 */
 	public static function register() {
 		add_action( 'sal_logged', array( __CLASS__, 'on_logged' ), 20, 4 );
 	}
 
-	/**
-	 * Inspect newly stored failed-login events.
-	 *
-	 * @param int    $log_id  Inserted log ID.
-	 * @param string $action  Event action.
-	 * @param string $message Event message.
-	 * @param array  $args    Event context.
-	 */
 	public static function on_logged( $log_id, $action, $message, $args ) {
 		if ( 'login_failed' !== $action ) {
 			return;
 		}
 
-		$ip       = ! empty( $args['ip_address'] ) ? $args['ip_address'] : Logger::get_client_ip();
-		$username = ! empty( $args['username'] ) ? sanitize_user( $args['username'], true ) : '';
-		$window   = self::window_hours();
+		$ip        = ! empty( $args['ip_address'] ) ? $args['ip_address'] : Logger::get_client_ip();
+		$username  = ! empty( $args['username'] ) ? sanitize_user( $args['username'], true ) : '';
+		$window    = self::window_hours();
 		$threshold = self::threshold();
-
-		$signals = array();
+		$signals   = array();
 
 		if ( $ip ) {
 			$by_ip = self::find_by_ip( $ip, $window );
 			if ( $by_ip['attempts'] >= $threshold ) {
 				$signals[] = array(
-					'type'              => 'ip_bruteforce',
-					'attempts'          => $by_ip['attempts'],
+					'type'               => 'ip_bruteforce',
+					'attempts'           => $by_ip['attempts'],
 					'distinct_usernames' => $by_ip['distinct_usernames'],
 				);
 			}
@@ -72,6 +56,17 @@ class SecurityDetector {
 		}
 
 		$score = self::score( $signals );
+		$level = self::risk_level( $score );
+
+		IncidentManager::create_or_increment(
+			'login_attack',
+			$level,
+			$score,
+			$username,
+			$ip,
+			$signals,
+			$log_id
+		);
 
 		Logger::log(
 			'suspicious_activity',
@@ -89,7 +84,7 @@ class SecurityDetector {
 					'source_log_id' => absint( $log_id ),
 					'username'      => $username,
 					'risk_score'    => $score,
-					'risk_level'    => self::risk_level( $score ),
+					'risk_level'    => $level,
 					'window_hours'  => $window,
 					'signals'       => $signals,
 				),
@@ -125,19 +120,15 @@ class SecurityDetector {
 
 	private static function score( $signals ) {
 		$score = 0;
-
 		foreach ( $signals as $signal ) {
 			$score += 'ip_bruteforce' === $signal['type'] ? 45 : 50;
-
 			if ( isset( $signal['distinct_usernames'] ) && $signal['distinct_usernames'] >= self::threshold() ) {
 				$score += 15;
 			}
-
 			if ( isset( $signal['distinct_ips'] ) && $signal['distinct_ips'] >= self::threshold() ) {
 				$score += 15;
 			}
 		}
-
 		return min( 100, $score );
 	}
 
@@ -155,12 +146,10 @@ class SecurityDetector {
 	}
 
 	private static function threshold() {
-		$threshold = (int) apply_filters( 'sal_security_detection_threshold', self::DEFAULT_THRESHOLD );
-		return max( 1, $threshold );
+		return max( 1, (int) apply_filters( 'sal_security_detection_threshold', self::DEFAULT_THRESHOLD ) );
 	}
 
 	private static function window_hours() {
-		$hours = (int) apply_filters( 'sal_security_detection_window_hours', self::DEFAULT_WINDOW_HOURS );
-		return max( 1, $hours );
+		return max( 1, (int) apply_filters( 'sal_security_detection_window_hours', self::DEFAULT_WINDOW_HOURS ) );
 	}
 }
