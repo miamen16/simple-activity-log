@@ -87,12 +87,9 @@ class AlertManager {
 
 		$column = $columns[ $column ];
 		$since  = wp_date( 'Y-m-d H:i:s', time() - ( self::CHECK_WINDOW_HOURS * HOUR_IN_SECONDS ) );
+		$sql    = 'SELECT COUNT(*) FROM ' . $table . " WHERE action = 'login_failed' AND " . $column . ' = %s AND created_at >= %s';
 
-		return (int) $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
-			"SELECT COUNT(*) FROM {$table} WHERE action = 'login_failed' AND {$column} = %s AND created_at >= %s",
-			$value,
-			$since
-		) );
+		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $value, $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 	}
 
 	private static function maybe_send( $key, $message ) {
