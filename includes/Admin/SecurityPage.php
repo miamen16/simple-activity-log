@@ -2,6 +2,7 @@
 
 namespace SAL\Admin;
 
+use SAL\Core\LogQuery;
 use SAL\Core\SecurityAnalyzer;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -9,9 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * "Security" submenu — surfaces failed-login patterns (by IP and by
- * username) that plain log browsing makes easy to miss, using the data
- * AuthLogger already records.
+ * Security dashboard — failed-login patterns plus detected security events.
  */
 class SecurityPage {
 
@@ -55,6 +54,8 @@ class SecurityPage {
 		$by_ip          = SecurityAnalyzer::get_failed_logins_by_ip( $window );
 		$by_username    = SecurityAnalyzer::get_failed_logins_by_username( $window );
 		$threshold      = SecurityAnalyzer::threshold();
+		$security_events = LogQuery::get_security_events( $window, 50 );
+		$security_summary = LogQuery::get_security_summary( $window );
 
 		include SAL_PATH . 'templates/security.php';
 	}
