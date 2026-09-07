@@ -70,7 +70,7 @@ class LogsPage {
 
 	/**
 	 * Streams a CSV of every log row matching the current filters (not
-	 * just the current page) so exports are actually useful for audits.
+	 * just the current page) without loading the entire export into memory.
 	 */
 	public function handle_csv_export() {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
@@ -79,11 +79,9 @@ class LogsPage {
 
 		check_admin_referer( 'sal_export_csv' );
 
-		$filters             = $this->get_filters();
-		$filters['page']     = 1;
-		$filters['per_page'] = 100000; // Effectively "all matching rows" for a CSV export.
-
-		$logs = LogQuery::get_logs( $filters );
+		$filters = $this->get_filters();
+		$page    = 1;
+		$chunk   = LogQuery::MAX_PER_PAGE;
 
 		nocache_headers();
 		header( 'Content-Type: text/csv; charset=utf-8' );
@@ -92,15 +90,23 @@ class LogsPage {
 		$out = fopen( 'php://output', 'w' );
 		fputcsv( $out, array( 'Date', 'User', 'Action', 'Message', 'IP Address' ) );
 
-		foreach ( $logs as $log ) {
-			fputcsv( $out, array(
-				$log->created_at,
-				$log->username ?: __( 'Guest', 'simple-activity-log' ),
-				$log->action,
-				$log->message,
-				$log->ip_address,
-			) );
-		}
+		do {
+			$filters['page']     = $page;
+			$filters['per_page'] = $chunk;
+			$logs               = LogQuery::get_logs( $filters );
+
+			foreach ( $logs as $log ) {
+				fputcsv( $out, array(
+					$log->created_at,
+					$log->username ?: __( 'Guest', 'simple-activity-log' ),
+					$log->action,
+					$log->message,
+					$log->ip_address,
+				) );
+			}
+
+			$page++;
+		} while ( count( $logs ) === $chunk );
 
 		fclose( $out );
 		exit;
