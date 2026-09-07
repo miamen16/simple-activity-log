@@ -108,7 +108,7 @@ class LogsPage {
 			$page++;
 		} while ( count( $logs ) === $chunk );
 
-		fclose( $out );
+		// The request exits immediately, so PHP will release the output stream.
 		exit;
 	}
 }
