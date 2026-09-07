@@ -93,6 +93,49 @@ class IncidentManager {
 	}
 
 	/**
+	 * Get aggregate incident metrics for a time window.
+	 *
+	 * @param int $hours Lookback window.
+	 * @return array
+	 */
+	public static function get_stats( $hours = 24 ) {
+		global $wpdb;
+
+		$hours = max( 1, min( 720, absint( $hours ) ) );
+		$table = esc_sql( self::table() );
+		$since = wp_date( 'Y-m-d H:i:s', time() - ( $hours * HOUR_IN_SECONDS ) );
+		$rows  = $wpdb->get_results( $wpdb->prepare( 'SELECT status, severity, COUNT(*) AS total FROM ' . $table . ' WHERE last_seen >= %s GROUP BY status, severity', $since ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		$stats = array(
+			'open'          => 0,
+			'investigating' => 0,
+			'resolved'      => 0,
+			'ignored'       => 0,
+			'critical'      => 0,
+			'high'          => 0,
+			'medium'        => 0,
+			'low'           => 0,
+			'total'         => 0,
+		);
+
+		foreach ( $rows as $row ) {
+			$total = (int) $row->total;
+			$status = sanitize_key( $row->status );
+			$severity = sanitize_key( $row->severity );
+
+			if ( isset( $stats[ $status ] ) ) {
+				$stats[ $status ] += $total;
+			}
+			if ( isset( $stats[ $severity ] ) ) {
+				$stats[ $severity ] += $total;
+			}
+			$stats['total'] += $total;
+		}
+
+		return $stats;
+	}
+
+	/**
 	 * Get activity surrounding an incident for investigation.
 	 *
 	 * @param object $incident Incident row.
