@@ -13,9 +13,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare production plugin build
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf build
+          mkdir -p build/simple-activity-log
+          rsync -a \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.gitignore' \
+            --exclude='AUDIT.md' \
+            --exclude='composer.json' \
+            --exclude='composer.lock' \
+            --exclude='phpcs.xml.dist' \
+            --exclude='build/' \
+            --exclude='vendor/' \
+            --exclude='*.json' \
+            ./ build/simple-activity-log/
+
       - name: Run WordPress Plugin Check
         uses: WordPress/plugin-check-action@main
         with:
-          build-dir: .
+          build-dir: build/simple-activity-log
           wp-version: '7.1'
           strict: true
