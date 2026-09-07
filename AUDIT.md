@@ -4,14 +4,14 @@
 
 Reviewed the `main` branch of Simple Activity Log across bootstrap/autoloading, database lifecycle, logging, security analysis, admin pages, templates, WooCommerce integration, retention, uninstall, and WordPress.org readiness.
 
-## Findings
+## Findings and status
 
-### High priority
+### High priority — fixed
 
-1. **Timezone cutoff inconsistency** — `current_time('mysql')` stores site-local timestamps, while `gmdate()` was used to calculate retention/security cutoffs from `current_time('timestamp')`. This can shift the effective window on non-UTC sites.
-2. **Log-query indexing** — security grouping and date-window queries benefit from composite indexes. The original schema only had individual indexes for `action` and `created_at`.
+1. **Timezone cutoff inconsistency — FIXED.** `created_at` is stored in the WordPress site timezone, so retention and security lookback cutoffs now use `wp_date()` in the same timezone instead of mixing site-local timestamps with `gmdate()`.
+2. **Log-query indexing — FIXED.** Added composite indexes for `(action, created_at)`, `(ip_address, created_at)`, and `(username, created_at)`, and bumped the database schema version to `1.0.1` so existing installations receive the migration through `dbDelta()`.
 
-### Medium priority
+### Medium priority — pending release preparation
 
 3. **Release metadata is incomplete for WordPress.org** — the main plugin header does not declare `Requires at least` or a GPL-compatible `License`, while `Plugin URI` still points to an example domain.
 4. **readme.txt is incomplete for a public directory submission** — it lacks the standard WordPress.org fields such as `Requires at least`, `Tested up to`, `License`, and `License URI`.
