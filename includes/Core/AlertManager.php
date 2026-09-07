@@ -16,10 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class AlertManager {
 
-	const OPTION_ENABLED      = 'sal_alerts_enabled';
-	const OPTION_EMAIL        = 'sal_alert_email';
-	const COOLDOWN             = HOUR_IN_SECONDS;
-	const CHECK_WINDOW_HOURS   = 1;
+	const OPTION_ENABLED    = 'sal_alerts_enabled';
+	const OPTION_EMAIL      = 'sal_alert_email';
+	const COOLDOWN           = HOUR_IN_SECONDS;
+	const CHECK_WINDOW_HOURS = 1;
 
 	public static function is_enabled() {
 		return '1' === get_option( self::OPTION_ENABLED, '0' );
@@ -86,7 +86,7 @@ class AlertManager {
 		}
 
 		$column = $columns[ $column ];
-		$since  = gmdate( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( self::CHECK_WINDOW_HOURS * HOUR_IN_SECONDS ) );
+		$since  = wp_date( 'Y-m-d H:i:s', time() - ( self::CHECK_WINDOW_HOURS * HOUR_IN_SECONDS ) );
 
 		return (int) $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQLPlaceholders
 			"SELECT COUNT(*) FROM {$table} WHERE action = 'login_failed' AND {$column} = %s AND created_at >= %s",
