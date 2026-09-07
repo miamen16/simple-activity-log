@@ -21,17 +21,17 @@ class EventRegistry {
 	 */
 	public static function all() {
 		$events = array(
-			'auth_login' => array(
+			'login' => array(
 				'label'    => __( 'Login', 'simple-activity-log' ),
 				'category' => 'authentication',
 				'risk'     => 10,
 			),
-			'auth_logout' => array(
+			'logout' => array(
 				'label'    => __( 'Logout', 'simple-activity-log' ),
 				'category' => 'authentication',
 				'risk'     => 0,
 			),
-			'auth_login_failed' => array(
+			'login_failed' => array(
 				'label'    => __( 'Failed login', 'simple-activity-log' ),
 				'category' => 'authentication',
 				'risk'     => 30,
@@ -59,7 +59,7 @@ class EventRegistry {
 			'post_updated' => array(
 				'label'    => __( 'Content updated', 'simple-activity-log' ),
 				'category' => 'content',
-				'risk'     => 10,
+				risk'     => 10,
 			),
 			'post_deleted' => array(
 				'label'    => __( 'Content deleted', 'simple-activity-log' ),
@@ -81,22 +81,57 @@ class EventRegistry {
 				'category' => 'settings',
 				'risk'     => 20,
 			),
-			'woocommerce_order_created' => array(
+			'order_created' => array(
 				'label'    => __( 'Order created', 'simple-activity-log' ),
 				'category' => 'woocommerce',
 				'risk'     => 5,
 			),
-			'woocommerce_order_status_changed' => array(
+			'order_status_changed' => array(
 				'label'    => __( 'Order status changed', 'simple-activity-log' ),
 				'category' => 'woocommerce',
 				'risk'     => 25,
 			),
-			'woocommerce_refund_created' => array(
-				'label'    => __( 'Refund created', 'simple-activity-log' ),
+			'order_cancelled' => array(
+				'label'    => __( 'Order cancelled', 'simple-activity-log' ),
 				'category' => 'woocommerce',
 				'risk'     => 40,
 			),
-			'security_suspicious_activity' => array(
+			'order_refunded' => array(
+				'label'    => __( 'Order refunded', 'simple-activity-log' ),
+				'category' => 'woocommerce',
+				'risk'     => 50,
+			),
+			'order_completed' => array(
+				'label'    => __( 'Order completed', 'simple-activity-log' ),
+				'category' => 'woocommerce',
+				'risk'     => 10,
+			),
+			'order_failed' => array(
+				'label'    => __( 'Order failed', 'simple-activity-log' ),
+				'category' => 'woocommerce',
+				'risk'     => 35,
+			),
+			'order_payment_completed' => array(
+				'label'    => __( 'Order payment completed', 'simple-activity-log' ),
+				'category' => 'woocommerce',
+				'risk'     => 5,
+			),
+			'order_trashed' => array(
+				'label'    => __( 'Order trashed', 'simple-activity-log' ),
+				'category' => 'woocommerce',
+				'risk'     => 35,
+			),
+			'order_restored' => array(
+				'label'    => __( 'Order restored', 'simple-activity-log' ),
+				'category' => 'woocommerce',
+				'risk'     => 20,
+			),
+			'order_deleted' => array(
+				'label'    => __( 'Order deleted', 'simple-activity-log' ),
+				'category' => 'woocommerce',
+				'risk'     => 60,
+			),
+			'suspicious_activity' => array(
 				'label'    => __( 'Suspicious activity', 'simple-activity-log' ),
 				'category' => 'security',
 				'risk'     => 80,
