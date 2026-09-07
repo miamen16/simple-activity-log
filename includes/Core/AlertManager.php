@@ -9,8 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Turns the Security page from something you have to remember to check
  * into something that emails you. Checked right after each failed-login
- * event is logged (see AuthLogger) — if the IP or username has crossed
- * the suspicious threshold within the last hour, send one alert email,
+ * event is logged (see AuthLogger) — if the IP or username has crossed the
+ * suspicious threshold within the last hour, send one alert email,
  * then stay quiet for a cooldown period so a sustained attack doesn't
  * flood the inbox with one email per attempt.
  */
@@ -75,7 +75,7 @@ class AlertManager {
 
 	private static function count_since( $column, $value ) {
 		global $wpdb;
-		$table = Database::table();
+		$table = esc_sql( Database::table() );
 		$columns = array(
 			'ip_address' => 'ip_address',
 			'username'   => 'username',
@@ -88,7 +88,7 @@ class AlertManager {
 		$column = $columns[ $column ];
 		$since  = wp_date( 'Y-m-d H:i:s', time() - ( self::CHECK_WINDOW_HOURS * HOUR_IN_SECONDS ) );
 
-		return (int) $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQLPlaceholders
+		return (int) $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
 			"SELECT COUNT(*) FROM {$table} WHERE action = 'login_failed' AND {$column} = %s AND created_at >= %s",
 			$value,
 			$since
