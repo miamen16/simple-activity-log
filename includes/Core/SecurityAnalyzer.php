@@ -42,10 +42,10 @@ class SecurityAnalyzer {
 	 */
 	public static function get_failed_logins_by_ip( $hours = 24 ) {
 		global $wpdb;
-		$table = Database::table();
+		$table = esc_sql( Database::table() );
 		$since = self::since( $hours );
 
-		return $wpdb->get_results( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		return $wpdb->get_results( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
 			"SELECT ip_address, COUNT(*) as attempts, COUNT(DISTINCT username) as distinct_usernames,
 				GROUP_CONCAT(DISTINCT username ORDER BY username SEPARATOR ', ') as usernames_tried,
 				MAX(created_at) as last_attempt
@@ -67,10 +67,10 @@ class SecurityAnalyzer {
 	 */
 	public static function get_failed_logins_by_username( $hours = 24 ) {
 		global $wpdb;
-		$table = Database::table();
+		$table = esc_sql( Database::table() );
 		$since = self::since( $hours );
 
-		return $wpdb->get_results( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		return $wpdb->get_results( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
 			"SELECT username, COUNT(*) as attempts, COUNT(DISTINCT ip_address) as distinct_ips,
 				MAX(created_at) as last_attempt
 			 FROM {$table}
@@ -88,10 +88,10 @@ class SecurityAnalyzer {
 	 */
 	public static function get_summary( $hours = 24 ) {
 		global $wpdb;
-		$table = Database::table();
+		$table = esc_sql( Database::table() );
 		$since = self::since( $hours );
 
-		$row = $wpdb->get_row( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$row = $wpdb->get_row( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
 			"SELECT COUNT(*) as total_attempts,
 				COUNT(DISTINCT ip_address) as distinct_ips,
 				COUNT(DISTINCT username) as distinct_usernames
