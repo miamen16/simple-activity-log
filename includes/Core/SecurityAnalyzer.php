@@ -29,7 +29,8 @@ class SecurityAnalyzer {
 	 * plugin files.
 	 */
 	public static function threshold() {
-		return (int) apply_filters( 'sal_suspicious_login_threshold', self::DEFAULT_THRESHOLD );
+		$threshold = (int) apply_filters( 'sal_suspicious_login_threshold', self::DEFAULT_THRESHOLD );
+		return max( 1, $threshold );
 	}
 
 	/**
@@ -100,8 +101,8 @@ class SecurityAnalyzer {
 		) );
 
 		return array(
-			'total_attempts'    => $row ? (int) $row->total_attempts : 0,
-			'distinct_ips'      => $row ? (int) $row->distinct_ips : 0,
+			'total_attempts'     => $row ? (int) $row->total_attempts : 0,
+			'distinct_ips'       => $row ? (int) $row->distinct_ips : 0,
 			'distinct_usernames' => $row ? (int) $row->distinct_usernames : 0,
 		);
 	}
