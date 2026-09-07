@@ -38,13 +38,15 @@ IP addresses and user-agent strings are retained as part of the audit record unt
 
 The plugin does not log passwords or password values. Site owners should review their privacy policy and retention requirements before enabling indefinite retention.
 
+The plugin integrates with WordPress's personal-data Export and Erase tools for activity records associated with registered users.
+
 == Installation ==
 
 1. Upload the `simple-activity-log` directory to `/wp-content/plugins/`.
 2. Activate the plugin from **Plugins** in WordPress.
-3. Open **Settings > Simple Activity Log** to configure retention and optional email alerts.
-4. Open **Tools > Activity Log** to review events.
-5. Use **Tools > Activity Log > Security** to review failed-login activity.
+3. Open **Activity Log > Settings** to configure retention and optional email alerts.
+4. Open **Activity Log** to review events.
+5. Open **Activity Log > Security** to review failed-login activity.
 
 WooCommerce logging is enabled automatically when WooCommerce is active.
 
@@ -61,6 +63,7 @@ WooCommerce logging is enabled automatically when WooCommerce is active.
 * `SecurityAnalyzer.php` — failed-login clustering by IP and username.
 * `Retention.php` — scheduled deletion of expired records.
 * `AlertManager.php` — optional email alerts for suspicious login activity.
+* `Privacy.php` — personal-data export and erasure integration.
 
 `includes/Loggers/`
 
@@ -112,7 +115,7 @@ Watched WordPress options:
 
 == WooCommerce compatibility ==
 
-WooCommerce logging uses WooCommerce order hooks rather than direct assumptions about the underlying order storage, so it is designed to work with both legacy order storage and HPOS.
+WooCommerce logging uses WooCommerce order-level hooks rather than direct assumptions about the underlying order storage, so it is designed to work with both legacy order storage and HPOS.
 
 WooCommerce is optional. The plugin does not require WooCommerce to log normal WordPress activity.
 
@@ -137,9 +140,10 @@ The order logger uses WooCommerce order-level hooks and is designed to work with
 == Changelog ==
 
 = 1.0.0 =
-* First release.
+* First stable release.
 * Added WordPress authentication, product, order, settings, user, and security logging.
 * Added retention, suspicious-login alerts, dashboard activity widget, filters, and CSV export.
+* Added WordPress personal-data export and erasure integration.
 * Added WordPress.org release metadata and automated quality checks.
 
 == Upgrade Notice ==
