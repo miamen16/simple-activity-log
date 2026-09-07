@@ -72,29 +72,29 @@ class Privacy {
 
 		foreach ( $logs as $log ) {
 			$data[] = array(
-			'name'  => __( 'Activity Log', 'simple-activity-log' ),
-			'value' => array(
-				array(
-					'name'  => __( 'Date', 'simple-activity-log' ),
-					'value' => $log->created_at,
+				'name'  => __( 'Activity Log', 'simple-activity-log' ),
+				'value' => array(
+					array(
+						'name'  => __( 'Date', 'simple-activity-log' ),
+						'value' => $log->created_at,
+					),
+					array(
+						'name'  => __( 'Action', 'simple-activity-log' ),
+						'value' => $log->action,
+					),
+					array(
+						'name'  => __( 'Message', 'simple-activity-log' ),
+						'value' => $log->message,
+					),
+					array(
+						'name'  => __( 'IP Address', 'simple-activity-log' ),
+						'value' => $log->ip_address,
+					),
+					array(
+						'name'  => __( 'User Agent', 'simple-activity-log' ),
+						'value' => $log->user_agent,
+					),
 				),
-				array(
-					'name'  => __( 'Action', 'simple-activity-log' ),
-					'value' => $log->action,
-				),
-				array(
-					'name'  => __( 'Message', 'simple-activity-log' ),
-					'value' => $log->message,
-				),
-				array(
-					'name'  => __( 'IP Address', 'simple-activity-log' ),
-					'value' => $log->ip_address,
-				),
-				array(
-					'name'  => __( 'User Agent', 'simple-activity-log' ),
-					'value' => $log->user_agent,
-				),
-			),
 			);
 		}
 
@@ -107,11 +107,16 @@ class Privacy {
 	/**
 	 * Erase log records associated with a user's email address.
 	 *
+	 * The table is reduced after each page, so every request reads the
+	 * first remaining page rather than using an offset that could skip rows.
+	 *
 	 * @param string $email_address User email address.
-	 * @param int    $page          Erasure page number.
+	 * @param int    $page          Erasure page number (unused; required by the API).
 	 * @return array
 	 */
 	public static function erase_personal_data( $email_address, $page = 1 ) {
+		unset( $page );
+
 		$user = get_user_by( 'email', $email_address );
 		if ( ! $user ) {
 			return array(
@@ -125,11 +130,10 @@ class Privacy {
 		global $wpdb;
 		$table = Database::table();
 		$ids   = $wpdb->get_col( $wpdb->prepare(
-			"SELECT id FROM {$table} WHERE user_id = %d OR username = %s ORDER BY id ASC LIMIT %d OFFSET %d",
+			"SELECT id FROM {$table} WHERE user_id = %d OR username = %s ORDER BY id ASC LIMIT %d",
 			$user->ID,
 			$user->user_login,
-			self::PAGE_SIZE,
-			( max( 1, (int) $page ) - 1 ) * self::PAGE_SIZE
+			self::PAGE_SIZE
 		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		if ( empty( $ids ) ) {
