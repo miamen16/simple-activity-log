@@ -90,6 +90,40 @@ class LogQuery {
 	}
 
 	/**
+	 * Aggregate suspicious activity by hour or day for dashboard charts.
+	 *
+	 * @param int $hours Number of hours to inspect.
+	 * @return array
+	 */
+	public static function get_security_trend( $hours = 24 ) {
+		global $wpdb;
+		$table = esc_sql( Database::table() );
+		$hours = max( 1, min( 720, (int) $hours ) );
+		$since = wp_date( 'Y-m-d H:i:s', time() - ( $hours * HOUR_IN_SECONDS ) );
+
+		if ( $hours <= 24 ) {
+			$format = '%Y-%m-%d %H:00:00';
+		} else {
+			$format = '%Y-%m-%d 00:00:00';
+		}
+
+		$sql = 'SELECT DATE_FORMAT(created_at, %s) AS period, COUNT(*) AS total FROM ' . $table
+			. ' WHERE action = %s AND created_at >= %s'
+			. ' GROUP BY period ORDER BY period ASC';
+
+		$rows = $wpdb->get_results(
+			$wpdb->prepare( $sql, $format, 'suspicious_activity', $since )
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		$trend = array();
+		foreach ( $rows as $row ) {
+			$trend[ $row->period ] = (int) $row->total;
+		}
+
+		return $trend;
+	}
+
+	/**
 	 * Get a compact security-event summary for a time window.
 	 *
 	 * @param int $hours Number of hours to inspect.
