@@ -1,28 +1,32 @@
 <?php
 /**
- * Plugin Name: Simple Activity Log
- * Plugin URI:  https://example.com/simple-activity-log
- * Description: Logs who did what and when — logins, content changes, orders, settings, and failed login attempts.
- * Version:     1.0.0-alpha
- * Author:      Mohamed
- * Text Domain: simple-activity-log
- * Requires PHP: 7.4
+ * Plugin Name:       Simple Activity Log
+ * Plugin URI:        https://github.com/miamen16/simple-activity-log
+ * Description:       Logs who did what and when — logins, content changes, orders, settings, and failed login attempts.
+ * Version:           1.0.0
+ * Requires at least: 5.3
+ * Requires PHP:      7.4
+ * Author:            Mohamed Ibrahim
+ * Author URI:        https://github.com/miamen16
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       simple-activity-log
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // No direct access.
 }
 
-define( 'SAL_VERSION', '1.0.0-alpha' );
+define( 'SAL_VERSION', '1.0.0' );
 define( 'SAL_FILE', __FILE__ );
 define( 'SAL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SAL_URL', plugin_dir_url( __FILE__ ) );
 define( 'SAL_DB_VERSION', '1.0.1' );
 
 /**
- * Simple PSR-4-ish autoloader for the SAL\ namespace.
- * SAL\Core\Plugin        -> includes/Core/Plugin.php
- * SAL\Loggers\AuthLogger -> includes/Loggers/AuthLogger.php
+ * Simple PSR-4-ish autoloader for the SAL\\ namespace.
+ * SAL\\Core\\Plugin        -> includes/Core/Plugin.php
+ * SAL\\Loggers\\AuthLogger -> includes/Loggers/AuthLogger.php
  */
 spl_autoload_register( function ( $class ) {
 	$prefix = 'SAL\\';
