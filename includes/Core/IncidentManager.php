@@ -37,35 +37,43 @@ class IncidentManager {
 
 		if ( $existing ) {
 			$wpdb->query( $wpdb->prepare( 'UPDATE ' . $table . ' SET severity = %s, score = %d, occurrences = occurrences + 1, last_seen = %s, status = %s, signals = %s, source_log_id = %d, updated_at = %s WHERE id = %d', $severity, $score, $now, self::STATUS_OPEN, wp_json_encode( $signals ), absint( $source_log_id ), $now, absint( $existing->id ) ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
-			return (int) $existing->id;
+			$incident_id = (int) $existing->id;
+		} else {
+			$title = $username
+				? sprintf( __( 'Suspicious activity for user %s', 'simple-activity-log' ), $username )
+				: __( 'Suspicious activity detected', 'simple-activity-log' );
+
+			$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				$table,
+				array(
+					'fingerprint'   => $fingerprint,
+					'type'          => $type,
+					'title'         => $title,
+					'severity'      => $severity,
+					'score'         => $score,
+					'status'        => self::STATUS_OPEN,
+					'username'      => $username,
+					'ip_address'    => $ip,
+					'occurrences'   => 1,
+					'first_seen'    => $now,
+					'last_seen'     => $now,
+					'signals'       => wp_json_encode( $signals ),
+					'source_log_id' => absint( $source_log_id ),
+					'created_at'    => $now,
+					'updated_at'    => $now,
+				)
+			);
+			$incident_id = $wpdb->insert_id ? (int) $wpdb->insert_id : 0;
 		}
 
-		$title = $username
-			? sprintf( __( 'Suspicious activity for user %s', 'simple-activity-log' ), $username )
-			: __( 'Suspicious activity detected', 'simple-activity-log' );
+		if ( $incident_id ) {
+			$incident = self::get( $incident_id );
+			if ( $incident ) {
+				do_action( 'sal_incident_created', $incident_id, $incident );
+			}
+		}
 
-		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			$table,
-			array(
-				'fingerprint'   => $fingerprint,
-				'type'          => $type,
-				'title'         => $title,
-				'severity'      => $severity,
-				'score'         => $score,
-				'status'        => self::STATUS_OPEN,
-				'username'      => $username,
-				'ip_address'    => $ip,
-				'occurrences'   => 1,
-				'first_seen'    => $now,
-				'last_seen'     => $now,
-				'signals'       => wp_json_encode( $signals ),
-				'source_log_id' => absint( $source_log_id ),
-				'created_at'    => $now,
-				'updated_at'    => $now,
-			)
-		);
-
-		return $wpdb->insert_id ? (int) $wpdb->insert_id : false;
+		return $incident_id ? $incident_id : false;
 	}
 
 	public static function get( $id ) {
@@ -87,8 +95,6 @@ class IncidentManager {
 	/**
 	 * Get activity surrounding an incident for investigation.
 	 *
-	 * Matches the incident IP or username inside the incident's observed window.
-	 *
 	 * @param object $incident Incident row.
 	 * @param int    $limit Maximum number of logs.
 	 * @return array
@@ -100,9 +106,9 @@ class IncidentManager {
 			return array();
 		}
 
-		$table = esc_sql( Database::table() );
-		$limit = min( 200, max( 1, absint( $limit ) ) );
-		$where = array( 'created_at BETWEEN %s AND %s' );
+		$table  = esc_sql( Database::table() );
+		$limit  = min( 200, max( 1, absint( $limit ) ) );
+		$where  = array( 'created_at BETWEEN %s AND %s' );
 		$params = array( $incident->first_seen, $incident->last_seen );
 
 		if ( ! empty( $incident->ip_address ) && ! empty( $incident->username ) ) {
@@ -118,7 +124,7 @@ class IncidentManager {
 		}
 
 		$params[] = $limit;
-		$sql = 'SELECT * FROM ' . $table . ' WHERE ' . implode( ' AND ', $where ) . ' ORDER BY created_at DESC, id DESC LIMIT %d';
+		$sql      = 'SELECT * FROM ' . $table . ' WHERE ' . implode( ' AND ', $where ) . ' ORDER BY created_at DESC, id DESC LIMIT %d';
 
 		return $wpdb->get_results( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
 	}
