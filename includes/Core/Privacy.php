@@ -120,7 +120,7 @@ class Privacy {
 		$user = get_user_by( 'email', $email_address );
 		if ( ! $user ) {
 			return array(
-				'msg'            => __( 'No Simple Activity Log records were found for this email address.', 'simple-activity-log' ),
+				'messages'       => array( __( 'No Simple Activity Log records were found for this email address.', 'simple-activity-log' ) ),
 				'done'           => true,
 				'items_removed'  => false,
 				'items_retained' => false,
@@ -138,7 +138,7 @@ class Privacy {
 
 		if ( empty( $ids ) ) {
 			return array(
-				'msg'            => __( 'Simple Activity Log records were erased.', 'simple-activity-log' ),
+				'messages'       => array( __( 'Simple Activity Log records were erased.', 'simple-activity-log' ) ),
 				'done'           => true,
 				'items_removed'  => false,
 				'items_retained' => false,
@@ -149,7 +149,7 @@ class Privacy {
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN ({$placeholders})", $ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		return array(
-			'msg'            => __( 'Simple Activity Log records were erased.', 'simple-activity-log' ),
+			'messages'       => array( __( 'Simple Activity Log records were erased.', 'simple-activity-log' ) ),
 			'done'           => count( $ids ) < self::PAGE_SIZE,
 			'items_removed'  => true,
 			'items_retained' => false,
