@@ -7,24 +7,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * The only class that writes to wp_sal_logs. Every Logger (AuthLogger,
- * and future ProductLogger/OrderLogger/SettingsLogger/SecurityLogger)
- * calls Logger::log() instead of touching the DB directly, so the log
- * format stays consistent no matter how many logger types get added.
+ * The central event writer for Simple Activity Log.
+ *
+ * Loggers and third-party integrations should use this class (or the
+ * public sal_log() helper) instead of writing to the database directly.
  */
 class Logger {
 
 	/**
-	 * @param string $action      Machine-readable event type, e.g. 'login', 'login_failed'.
-	 * @param string $message     Human-readable summary, e.g. "Ahmed logged in".
+	 * Record an activity event.
+	 *
+	 * @param string $action Machine-readable event type.
+	 * @param string $message Human-readable event summary.
 	 * @param array  $args {
-	 *     @type int    $user_id     Defaults to the current logged-in user (0 if none/unknown).
-	 *     @type string $username    Snapshot of the username at log time (survives account deletion).
-	 *     @type string $object_type e.g. 'product', 'order', 'option' — optional.
-	 *     @type int    $object_id   ID of the affected object — optional.
-	 *     @type array  $meta        Extra structured data for this event — optional.
-	 *     @type string $ip_address  Overrides the auto-detected IP — optional.
+	 *     Optional event context.
+	 *
+	 *     @type int    $user_id     User responsible for the event.
+	 *     @type string $username    Username snapshot at log time.
+	 *     @type string $object_type Affected object type.
+	 *     @type int    $object_id   Affected object ID.
+	 *     @type array  $meta        Structured event metadata.
+	 *     @type string $ip_address  IP address override.
 	 * }
+	 * @return int|false Inserted log ID on success, false on failure.
 	 */
 	public static function log( $action, $message, array $args = array() ) {
 		global $wpdb;
@@ -39,33 +44,71 @@ class Logger {
 		);
 		$args = wp_parse_args( $args, $defaults );
 
-		if ( null === $args['username'] && $args['user_id'] ) {
-			$user             = get_userdata( $args['user_id'] );
+		$action  = substr( sanitize_key( $action ), 0, 50 );
+		$message = sanitize_text_field( $message );
+
+		if ( '' === $action || '' === $message ) {
+			return false;
+		}
+
+		$user_id = absint( $args['user_id'] );
+
+		if ( null === $args['username'] && $user_id ) {
+			$user             = get_userdata( $user_id );
 			$args['username'] = $user ? $user->user_login : null;
 		}
 
-		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$ip_address = $args['ip_address'] ?: self::get_client_ip();
+		if ( $ip_address && ! filter_var( $ip_address, FILTER_VALIDATE_IP ) ) {
+			$ip_address = null;
+		}
+
+		$meta = null;
+		if ( is_array( $args['meta'] ) ) {
+			$meta = wp_json_encode( $args['meta'] );
+		}
+
+		$inserted = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 			Database::table(),
 			array(
-				'user_id'     => (int) $args['user_id'],
-				'username'    => $args['username'],
+				'user_id'     => $user_id,
+				'username'    => $args['username'] ? sanitize_user( $args['username'], true ) : null,
 				'action'      => $action,
-				'object_type' => $args['object_type'],
-				'object_id'   => $args['object_id'],
+				'object_type' => $args['object_type'] ? sanitize_key( $args['object_type'] ) : null,
+				'object_id'   => null === $args['object_id'] ? null : absint( $args['object_id'] ),
 				'message'     => $message,
-				'ip_address'  => $args['ip_address'] ?: self::get_client_ip(),
+				'ip_address'  => $ip_address,
 				'user_agent'  => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ), 0, 255 ) : null, // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-				'meta'        => $args['meta'] ? wp_json_encode( $args['meta'] ) : null,
+				'meta'        => $meta,
 				'created_at'  => current_time( 'mysql' ),
 			)
 		);
+
+		if ( false === $inserted ) {
+			return false;
+		}
+
+		$log_id = (int) $wpdb->insert_id;
+
+		/**
+		 * Fires after an activity event has been stored successfully.
+		 *
+		 * @param int    $log_id   Inserted log ID.
+		 * @param string $action   Machine-readable event type.
+		 * @param string $message  Human-readable event summary.
+		 * @param array  $args     Event context.
+		 */
+		do_action( 'sal_logged', $log_id, $action, $message, $args );
+
+		return $log_id;
 	}
 
 	/**
 	 * Best-effort client IP, checking common proxy headers before falling
-	 * back to REMOTE_ADDR. Not spoof-proof (no header is, without a
-	 * trusted-proxy allowlist) — good enough for an activity log, not a
-	 * security control.
+	 * back to REMOTE_ADDR. Not spoof-proof — do not use this as a security
+	 * control without a trusted-proxy allowlist.
+	 *
+	 * @return string|null Valid IP address or null when unavailable.
 	 */
 	public static function get_client_ip() {
 		$headers = array( 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' );
