@@ -27,25 +27,20 @@ class Plugin {
 
 	public function init() {
 		Database::maybe_upgrade();
-
 		add_action( Retention::CRON_HOOK, array( 'SAL\\Core\\Retention', 'run_cleanup' ) );
 		Privacy::register();
 		SecurityDetector::register();
-
 		$this->register_loggers();
 
 		if ( is_admin() ) {
 			new \SAL\Admin\LogsPage();
 			new \SAL\Admin\SecurityPage();
+			new \SAL\Admin\IncidentsPage();
 			new \SAL\Admin\SettingsPage();
 			new \SAL\Admin\DashboardWidget();
 		}
 	}
 
-	/**
-	 * Register the built-in loggers. Third-party code (or future modules) can
-	 * hook 'sal_register_loggers' to add more without touching this file.
-	 */
 	private function register_loggers() {
 		$this->add( new \SAL\Loggers\AuthLogger() );
 		$this->add( new \SAL\Loggers\ProductLogger() );
