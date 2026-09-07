@@ -17,7 +17,7 @@ define( 'SAL_VERSION', '1.0.0-alpha' );
 define( 'SAL_FILE', __FILE__ );
 define( 'SAL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SAL_URL', plugin_dir_url( __FILE__ ) );
-define( 'SAL_DB_VERSION', '1.0.0' );
+define( 'SAL_DB_VERSION', '1.0.1' );
 
 /**
  * Simple PSR-4-ish autoloader for the SAL\ namespace.
