@@ -45,13 +45,12 @@ class LogQuery {
 
 		$offset = ( $page - 1 ) * $per_page;
 
-		$sql      = "SELECT * FROM {$table} WHERE " . implode( ' AND ', $where )
+		$sql      = 'SELECT * FROM ' . $table . ' WHERE ' . implode( ' AND ', $where )
 			. ' ORDER BY created_at DESC, id DESC LIMIT %d OFFSET %d';
 		$params[] = $per_page;
 		$params[] = $offset;
 
-		// Table name is generated internally and escaped above; %d values are prepared normally.
-		return $wpdb->get_results( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		return $wpdb->get_results( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 	}
 
 	public static function count_logs( array $args = array() ) {
@@ -62,9 +61,9 @@ class LogQuery {
 		$where[]  = '1 = %d';
 		$params[] = 1;
 
-		$sql = "SELECT COUNT(*) FROM {$table} WHERE " . implode( ' AND ', $where );
+		$sql = 'SELECT COUNT(*) FROM ' . $table . ' WHERE ' . implode( ' AND ', $where );
 
-		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		return (int) $wpdb->get_var( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 	}
 
 	/**
@@ -73,10 +72,9 @@ class LogQuery {
 	public static function get_logged_users() {
 		global $wpdb;
 		$table = esc_sql( Database::table() );
+		$sql   = 'SELECT DISTINCT user_id, username FROM ' . $table . ' WHERE user_id > 0 ORDER BY username ASC';
 
-		return $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			"SELECT DISTINCT user_id, username FROM {$table} WHERE user_id > 0 ORDER BY username ASC"
-		);
+		return $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	/**
@@ -85,8 +83,9 @@ class LogQuery {
 	public static function get_distinct_actions() {
 		global $wpdb;
 		$table = esc_sql( Database::table() );
+		$sql   = 'SELECT DISTINCT action FROM ' . $table . ' ORDER BY action ASC';
 
-		return $wpdb->get_col( "SELECT DISTINCT action FROM {$table} ORDER BY action ASC" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		return $wpdb->get_col( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 	private static function build_where( array $args ) {
