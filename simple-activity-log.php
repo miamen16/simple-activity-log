@@ -24,9 +24,9 @@ define( 'SAL_URL', plugin_dir_url( __FILE__ ) );
 define( 'SAL_DB_VERSION', '1.0.1' );
 
 /**
- * Simple PSR-4-ish autoloader for the SAL\\ namespace.
- * SAL\\Core\\Plugin        -> includes/Core/Plugin.php
- * SAL\\Loggers\\AuthLogger -> includes/Loggers/AuthLogger.php
+ * Simple PSR-4-ish autoloader for the SAL namespace.
+ * SAL\Core\Plugin        -> includes/Core/Plugin.php
+ * SAL\Loggers\AuthLogger -> includes/Loggers/AuthLogger.php
  */
 spl_autoload_register( function ( $class ) {
 	$prefix = 'SAL\\';
@@ -43,6 +43,25 @@ spl_autoload_register( function ( $class ) {
 		require $file;
 	}
 } );
+
+/**
+ * Public API for third-party plugins and themes to record activity.
+ *
+ * Example:
+ * sal_log( 'custom_action', 'A custom action occurred', array(
+ *     'object_type' => 'product',
+ *     'object_id'   => 123,
+ *     'meta'        => array( 'source' => 'my-plugin' ),
+ * ) );
+ *
+ * @param string $action Machine-readable event type.
+ * @param string $message Human-readable event summary.
+ * @param array  $args Optional event context.
+ * @return int|false Inserted log ID on success, false on failure.
+ */
+function sal_log( $action, $message, array $args = array() ) {
+	return \SAL\Core\Logger::log( $action, $message, $args );
+}
 
 /**
  * Boot the plugin once all plugins are loaded.
