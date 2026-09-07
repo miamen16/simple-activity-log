@@ -8,16 +8,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <div class="wrap sal-wrap">
 	<h1><?php esc_html_e( 'Security Incidents', 'simple-activity-log' ); ?></h1>
-
-	<p class="description">
-		<?php esc_html_e( 'Incidents group repeated detections into one manageable security case.', 'simple-activity-log' ); ?>
-	</p>
+	<p class="description"><?php esc_html_e( 'Incidents group repeated detections into one manageable security case.', 'simple-activity-log' ); ?></p>
 
 	<p>
 		<?php foreach ( $statuses as $key => $label ) : ?>
-			<a class="button <?php echo $status === $key ? 'button-primary' : ''; ?>" href="<?php echo esc_url( add_query_arg( array( 'page' => 'sal-incidents', 'status' => $key ), admin_url( 'admin.php' ) ) ); ?>">
-				<?php echo esc_html( $label ); ?>
-			</a>
+			<a class="button <?php echo $status === $key ? 'button-primary' : ''; ?>" href="<?php echo esc_url( add_query_arg( array( 'page' => 'sal-incidents', 'status' => $key ), admin_url( 'admin.php' ) ) ); ?>"><?php echo esc_html( $label ); ?></a>
 		<?php endforeach; ?>
 		<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=sal-incidents' ) ); ?>"><?php esc_html_e( 'All', 'simple-activity-log' ); ?></a>
 	</p>
@@ -26,22 +21,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p><?php esc_html_e( 'No incidents found.', 'simple-activity-log' ); ?></p>
 	<?php else : ?>
 		<table class="widefat striped">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Incident', 'simple-activity-log' ); ?></th>
-					<th><?php esc_html_e( 'Severity', 'simple-activity-log' ); ?></th>
-					<th><?php esc_html_e( 'Score', 'simple-activity-log' ); ?></th>
-					<th><?php esc_html_e( 'Occurrences', 'simple-activity-log' ); ?></th>
-					<th><?php esc_html_e( 'Username', 'simple-activity-log' ); ?></th>
-					<th><?php esc_html_e( 'IP Address', 'simple-activity-log' ); ?></th>
-					<th><?php esc_html_e( 'Last Seen', 'simple-activity-log' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'simple-activity-log' ); ?></th>
-				</tr>
-			</thead>
+			<thead><tr>
+				<th><?php esc_html_e( 'Incident', 'simple-activity-log' ); ?></th>
+				<th><?php esc_html_e( 'Severity', 'simple-activity-log' ); ?></th>
+				<th><?php esc_html_e( 'Score', 'simple-activity-log' ); ?></th>
+				<th><?php esc_html_e( 'Occurrences', 'simple-activity-log' ); ?></th>
+				<th><?php esc_html_e( 'Username', 'simple-activity-log' ); ?></th>
+				<th><?php esc_html_e( 'IP Address', 'simple-activity-log' ); ?></th>
+				<th><?php esc_html_e( 'Last Seen', 'simple-activity-log' ); ?></th>
+				<th><?php esc_html_e( 'Status', 'simple-activity-log' ); ?></th>
+			</tr></thead>
 			<tbody>
 				<?php foreach ( $incidents as $incident ) : ?>
 					<tr>
-						<td><strong><?php echo esc_html( $incident->title ); ?></strong><br /><span class="description">#<?php echo esc_html( $incident->id ); ?></span></td>
+						<td><a href="<?php echo esc_url( add_query_arg( array( 'page' => 'sal-incidents', 'incident' => absint( $incident->id ) ), admin_url( 'admin.php' ) ) ); ?>"><strong><?php echo esc_html( $incident->title ); ?></strong></a><br /><span class="description">#<?php echo esc_html( $incident->id ); ?></span></td>
 						<td><span class="sal-badge sal-badge-<?php echo esc_attr( $incident->severity ); ?>"><?php echo esc_html( ucfirst( $incident->severity ) ); ?></span></td>
 						<td><strong><?php echo esc_html( $incident->score ); ?>/100</strong></td>
 						<td><?php echo esc_html( $incident->occurrences ); ?></td>
