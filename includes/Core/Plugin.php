@@ -30,6 +30,7 @@ class Plugin {
 		add_action( Retention::CRON_HOOK, array( 'SAL\\Core\\Retention', 'run_cleanup' ) );
 		Privacy::register();
 		SecurityDetector::register();
+		IncidentAlertManager::register();
 		$this->register_loggers();
 
 		if ( is_admin() ) {
