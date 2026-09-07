@@ -1,0 +1,21 @@
+name: WordPress Plugin Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  plugin-check:
+    runs-on: ubuntu-latest
+    name: Plugin Check on WordPress 7.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run WordPress Plugin Check
+        uses: WordPress/plugin-check-action@main
+        with:
+          build-dir: .
+          wp-version: '7.1'
+          strict: true
