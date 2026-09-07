@@ -129,12 +129,8 @@ class Privacy {
 
 		global $wpdb;
 		$table = esc_sql( Database::table() );
-		$ids   = $wpdb->get_col( $wpdb->prepare(
-			"SELECT id FROM {$table} WHERE user_id = %d OR username = %s ORDER BY id ASC LIMIT %d",
-			$user->ID,
-			$user->user_login,
-			self::PAGE_SIZE
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		$sql   = 'SELECT id FROM ' . $table . ' WHERE user_id = %d OR username = %s ORDER BY id ASC LIMIT %d';
+		$ids   = $wpdb->get_col( $wpdb->prepare( $sql, $user->ID, $user->user_login, self::PAGE_SIZE ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 
 		if ( empty( $ids ) ) {
 			return array(
@@ -146,7 +142,8 @@ class Privacy {
 		}
 
 		$placeholders = implode( ', ', array_fill( 0, count( $ids ), '%d' ) );
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN ({$placeholders})", $ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		$sql          = 'DELETE FROM ' . $table . " WHERE id IN ({$placeholders})";
+		$wpdb->query( $wpdb->prepare( $sql, $ids ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 
 		return array(
 			'messages'       => array( __( 'Simple Activity Log records were erased.', 'simple-activity-log' ) ),
@@ -168,13 +165,8 @@ class Privacy {
 		global $wpdb;
 		$table  = esc_sql( Database::table() );
 		$offset = ( max( 1, (int) $page ) - 1 ) * self::PAGE_SIZE;
+		$sql    = 'SELECT created_at, action, message, ip_address, user_agent FROM ' . $table . ' WHERE user_id = %d OR username = %s ORDER BY id ASC LIMIT %d OFFSET %d';
 
-		return $wpdb->get_results( $wpdb->prepare(
-			"SELECT created_at, action, message, ip_address, user_agent FROM {$table} WHERE user_id = %d OR username = %s ORDER BY id ASC LIMIT %d OFFSET %d",
-			$user_id,
-			$username,
-			self::PAGE_SIZE,
-			$offset
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders
+		return $wpdb->get_results( $wpdb->prepare( $sql, $user_id, $username, self::PAGE_SIZE, $offset ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 	}
 }
