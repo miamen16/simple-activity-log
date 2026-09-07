@@ -82,7 +82,11 @@ class Database {
 	}
 
 	public static function maybe_upgrade() {
-		if ( get_option( 'sal_db_version' ) !== SAL_DB_VERSION ) {
+		global $wpdb;
+		$incidents_table = esc_sql( self::incidents_table() );
+		$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $incidents_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+
+		if ( get_option( 'sal_db_version' ) !== SAL_DB_VERSION || $exists !== $incidents_table ) {
 			self::install();
 		}
 	}
