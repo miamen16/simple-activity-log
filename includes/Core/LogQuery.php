@@ -72,9 +72,9 @@ class LogQuery {
 	public static function get_logged_users() {
 		global $wpdb;
 		$table = esc_sql( Database::table() );
-		$sql   = 'SELECT DISTINCT user_id, username FROM ' . $table . ' WHERE user_id > 0 ORDER BY username ASC';
+		$sql   = 'SELECT DISTINCT user_id, username FROM ' . $table . ' WHERE user_id > %d ORDER BY username ASC';
 
-		return $wpdb->get_results( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+		return $wpdb->get_results( $wpdb->prepare( $sql, 0 ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 	}
 
 	/**
@@ -83,9 +83,9 @@ class LogQuery {
 	public static function get_distinct_actions() {
 		global $wpdb;
 		$table = esc_sql( Database::table() );
-		$sql   = 'SELECT DISTINCT action FROM ' . $table . ' ORDER BY action ASC';
+		$sql   = 'SELECT DISTINCT action FROM ' . $table . ' WHERE 1 = %d ORDER BY action ASC';
 
-		return $wpdb->get_col( $sql ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+		return $wpdb->get_col( $wpdb->prepare( $sql, 1 ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders
 	}
 
 	private static function build_where( array $args ) {
