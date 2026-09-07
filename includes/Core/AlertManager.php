@@ -16,17 +16,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class AlertManager {
 
-	const OPTION_ENABLED = 'sal_alerts_enabled';
-	const OPTION_EMAIL   = 'sal_alert_email';
-	const COOLDOWN       = HOUR_IN_SECONDS;
-	const CHECK_WINDOW_HOURS = 1;
+	const OPTION_ENABLED      = 'sal_alerts_enabled';
+	const OPTION_EMAIL        = 'sal_alert_email';
+	const COOLDOWN             = HOUR_IN_SECONDS;
+	const CHECK_WINDOW_HOURS   = 1;
 
 	public static function is_enabled() {
 		return '1' === get_option( self::OPTION_ENABLED, '0' );
 	}
 
 	public static function get_alert_email() {
-		$email = get_option( self::OPTION_EMAIL, '' );
+		$email = sanitize_email( get_option( self::OPTION_EMAIL, '' ) );
 		return $email ? $email : get_option( 'admin_email' );
 	}
 
@@ -76,10 +76,20 @@ class AlertManager {
 	private static function count_since( $column, $value ) {
 		global $wpdb;
 		$table = Database::table();
-		$since = gmdate( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( self::CHECK_WINDOW_HOURS * HOUR_IN_SECONDS ) );
+		$columns = array(
+			'ip_address' => 'ip_address',
+			'username'   => 'username',
+		);
 
-		return (int) $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			"SELECT COUNT(*) FROM {$table} WHERE action = 'login_failed' AND {$column} = %s AND created_at >= %s", // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders
+		if ( ! isset( $columns[ $column ] ) ) {
+			return 0;
+		}
+
+		$column = $columns[ $column ];
+		$since  = gmdate( 'Y-m-d H:i:s', current_time( 'timestamp' ) - ( self::CHECK_WINDOW_HOURS * HOUR_IN_SECONDS ) );
+
+		return (int) $wpdb->get_var( $wpdb->prepare( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQLPlaceholders
+			"SELECT COUNT(*) FROM {$table} WHERE action = 'login_failed' AND {$column} = %s AND created_at >= %s",
 			$value,
 			$since
 		) );
@@ -92,8 +102,6 @@ class AlertManager {
 			return; // Already alerted on this within the cooldown window.
 		}
 
-		set_transient( $transient_key, 1, self::COOLDOWN );
-
 		$to      = self::get_alert_email();
 		$subject = sprintf(
 			/* translators: %s: site name */
@@ -101,6 +109,8 @@ class AlertManager {
 			get_bloginfo( 'name' )
 		);
 
-		wp_mail( $to, $subject, $message );
+		if ( wp_mail( $to, $subject, $message ) ) {
+			set_transient( $transient_key, 1, self::COOLDOWN );
+		}
 	}
 }
