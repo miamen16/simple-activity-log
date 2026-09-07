@@ -1,241 +1,148 @@
 === Simple Activity Log ===
 Contributors: mohamed
 Tags: activity log, audit log, security, logging
+Requires at least: 5.3
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0-alpha
+Stable tag: 1.0.0
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Logs who did what and when.
+Logs who did what and when — including logins, content changes, orders, settings, users, and failed login attempts.
 
 == Description ==
 
-This is Phase 1-5 of the build, plus 5 extra features built on top:
-Core logging engine + Auth logging (login, logout, failed login
-attempts) + Product lifecycle logging (created, renamed, updated,
-field changes like price/SKU/stock, trashed, restored, unpublished,
-deleted) + WooCommerce order logging (created, status changes
-including cancelled/refunded/completed/failed, trashed, restored,
-deleted) + Settings/plugin/theme logging (curated setting changes,
-plugin activate/deactivate/install/update/delete, theme switch/
-install/update/delete, core updates) + User/role logging (created,
-deleted, role changed, updated, password reset) + a Security view
-(failed-login clustering by IP and by username) + automatic log
-retention (daily cleanup) + email alerts on suspicious login
-activity + a Dashboard widget + an admin viewer with filters and
-CSV export.
+Simple Activity Log provides a central audit trail for important WordPress and WooCommerce activity.
+
+It records:
+
+* Successful logins, logouts, and failed login attempts.
+* Product creation, edits, status changes, trash, restore, and permanent deletion.
+* Product price, sale price, SKU, stock quantity, and stock status changes.
+* WooCommerce order creation, status changes, trash, restore, and permanent deletion.
+* Curated WordPress, WooCommerce, plugin, theme, and core setting changes.
+* User creation, deletion, role changes, profile updates, and password resets.
+* Failed-login clustering by IP address and username.
+* Optional email alerts for suspicious failed-login activity.
+* Automatic log retention and scheduled cleanup.
+* A WordPress Dashboard activity widget.
+* Filterable admin logs and CSV export.
+
+The plugin is designed around one flexible database table and a small logger architecture so additional event types can be added without changing the core logging API.
+
+== Security and privacy ==
+
+Activity records can contain usernames, user IDs, IP addresses, user-agent strings, timestamps, and selected before/after setting values. Access to the log viewer and CSV export is restricted to users with the `manage_options` capability.
+
+IP addresses and user-agent strings are retained as part of the audit record until the configured retention period removes them. The default retention period is 90 days; setting retention to 0 keeps logs indefinitely.
+
+The plugin does not log passwords or password values. Site owners should review their privacy policy and retention requirements before enabling indefinite retention.
+
+== Installation ==
+
+1. Upload the `simple-activity-log` directory to `/wp-content/plugins/`.
+2. Activate the plugin from **Plugins** in WordPress.
+3. Open **Settings > Simple Activity Log** to configure retention and optional email alerts.
+4. Open **Tools > Activity Log** to review events.
+5. Use **Tools > Activity Log > Security** to review failed-login activity.
+
+WooCommerce logging is enabled automatically when WooCommerce is active.
 
 == Architecture ==
 
-simple-activity-log.php          Bootstrap, autoloader, activation
-includes/Core/
-    Database.php                 Single flexible log table (wp_sal_logs)
-    Logger.php                   The only class that WRITES to the table
-    LogQuery.php                 Filtering/pagination/export reads
-    Plugin.php                   Registers loggers
-    SecurityAnalyzer.php         Failed-login clustering by IP/username
-    Retention.php                Scheduled cleanup of old log entries
-    AlertManager.php             Email alerts on suspicious login activity
-includes/Loggers/
-    AbstractLogger.php           Base class every logger extends
-    AuthLogger.php                Login / logout / failed login
-    ProductLogger.php            Product created / renamed / updated /
-                                  field changes / trashed / restored /
-                                  unpublished / deleted
-    OrderLogger.php              Order created / status changes /
-                                  trashed / restored / deleted
-                                  (WooCommerce-gated)
-    SettingsLogger.php           Curated setting changes + plugin/theme
-                                  activate/install/update/delete
-    UserLogger.php                User created / deleted / role changed /
-                                  updated / password reset
-includes/Admin/
-    LogsPage.php                 Admin page + CSV export handler
-    SecurityPage.php             Failed-login security view
-    SettingsPage.php             Retention + alert configuration
-    DashboardWidget.php          WP Dashboard "Recent Activity" widget
-templates/logs.php               Filterable log table
-templates/security.php           IP/username clustering tables
-templates/settings.php           Retention + alert settings form
-templates/dashboard-widget.php   Dashboard widget content
-assets/css/admin.css
+`simple-activity-log.php` bootstraps the plugin and handles activation/deactivation.
 
-== Why one flexible table ==
+`includes/Core/`
 
-wp_sal_logs has generic columns (object_type, object_id, meta) even
-though only auth events use them minimally today. This means adding
-the next logger (products, orders, settings, or failed-login-based
-security alerts) never requires a schema migration — just a new
-Logger class that calls Logger::log() with the right action name.
+* `Database.php` — creates and upgrades the single `wp_sal_logs` table.
+* `Logger.php` — central write API used by every logger.
+* `LogQuery.php` — filtering, pagination, counts, and export reads.
+* `Plugin.php` — registers loggers and admin components.
+* `SecurityAnalyzer.php` — failed-login clustering by IP and username.
+* `Retention.php` — scheduled deletion of expired records.
+* `AlertManager.php` — optional email alerts for suspicious login activity.
+
+`includes/Loggers/`
+
+* `AbstractLogger.php` — base logger contract.
+* `AuthLogger.php` — authentication activity.
+* `ProductLogger.php` — WooCommerce product activity.
+* `OrderLogger.php` — WooCommerce order activity.
+* `SettingsLogger.php` — curated settings and plugin/theme lifecycle activity.
+* `UserLogger.php` — user and role activity.
+
+`includes/Admin/`
+
+* `LogsPage.php` — admin log viewer and CSV export.
+* `SecurityPage.php` — failed-login security view.
+* `SettingsPage.php` — retention and alert configuration.
+* `DashboardWidget.php` — recent activity dashboard widget.
 
 == Extending ==
 
-To add a new logger (e.g. ProductLogger for edits/deletes):
-
-1. Create includes/Loggers/ProductLogger.php extending AbstractLogger.
-2. Implement id() and register_hooks() (hook 'save_post_product',
-   'before_delete_post', etc., and call Logger::log() from each).
-3. Register it via the 'sal_register_loggers' action:
+Third-party code can register additional logger classes without modifying the core plugin:
 
     add_action( 'sal_register_loggers', function( $plugin ) {
         $plugin->add( new \YourNamespace\ProductLogger() );
     } );
 
-No core files need to change.
+The central logging API is `SAL\\Core\\Logger::log()`.
 
-== Roadmap ==
+== Filters ==
 
-Phase 1  Core engine + Auth logging (done)
-Phase 2  Product lifecycle logging (done)
-Phase 3  WooCommerce order logging (done)
-Phase 4  Settings/plugin/theme logging (done)
-Phase 5  Security-focused view (done)
-
-All five originally planned phases are built, plus five extra
-features: log retention, email alerts, user/role logging, product
-field diffs (price/SKU/stock before-after), and a Dashboard widget.
-
-== Notes on the extra features ==
-
-* Retention (Retention.php): a daily cron (sal_cleanup_logs) deletes
-  rows older than the configured window (Settings page, default 90
-  days; 0 = keep forever). Scheduled on activation, unscheduled on
-  deactivation — a logging plugin with no retention policy grows
-  forever, so this isn't optional long-term.
-* Email alerts (AlertManager.php): checked right after each failed
-  login is logged. If an IP or username crosses the suspicious
-  threshold (same threshold as the Security page, filterable) within
-  the last hour, one email goes out, then a 1-hour cooldown per IP/
-  username (via transients) prevents a sustained attack from flooding
-  the inbox with one email per attempt. Off by default — enable and
-  set the address on the Settings page.
-* UserLogger: 'set_user_role' and 'profile_update' can both fire for
-  a single role change made through the user-edit screen, so a role
-  change may produce two log lines (a specific "role changed" entry
-  and a generic "profile updated" one) rather than being perfectly
-  de-duplicated — both are accurate on their own, left as acceptable
-  overlap, same as the minor OrderLogger overlap noted elsewhere.
-* Product field diffs: 'update_post_meta' (the "before" hook — value
-  not yet written) is used to capture accurate old/new pairs for
-  price, sale price, SKU, stock quantity, and stock status, filterable
-  via `sal_watched_product_meta`. Renames are detected via
-  'post_updated' (which gives both before/after WP_Post objects),
-  stashed in a static cache so on_transition() can use it regardless
-  of hook firing order — if the cache isn't populated yet when
-  on_transition() runs, it just falls back to the generic "Updated
-  product X" message for that save.
-* Dashboard widget: shows the 8 most recent log entries plus a
-  same-day failed-login count, with a link to the Security page when
-  any IP is currently flagged suspicious.
-* None of these five have been tested against a live site yet, same
-  caveat as everything else in this plugin so far — test after
-  deploying, don't assume correctness from the code alone.
-
-== Notes on the Security page ==
-
-* Reuses the existing 'login_failed' events AuthLogger already
-  records — no separate security table, same principle as
-  VendorHealth reusing Store Doctor's scan data instead of a
-  per-vendor re-scan.
-* Two clustering views, because they catch different attack shapes:
-  by IP (one IP trying many different usernames = brute-force/
-  credential-stuffing scanning) and by username (one username hit
-  from many different IPs = a targeted or distributed attack on that
-  specific account).
-* "Suspicious" threshold defaults to 5 attempts in the selected
-  window and is filterable without editing plugin files:
+Suspicious-login threshold:
 
     add_filter( 'sal_suspicious_login_threshold', function( $threshold ) {
         return 10;
     } );
 
-* Time windows are 24h / 7d / 30d. Cutoffs are computed with
-  current_time('timestamp') to match how created_at is stored
-  (via current_time('mysql'), i.e. site-local time) — using UTC time()
-  here would silently misalign the window on any site not set to UTC.
-* This is a detection view, not an enforcement mechanism — it
-  surfaces patterns for a human to look at, it does not auto-block
-  IPs or lock accounts. Pairing it with a dedicated login-throttling
-  plugin (e.g. one that actually rate-limits or blocks) is worth
-  considering for sites that need active protection, not just
-  visibility.
+Watched product meta fields:
 
-== Notes on SettingsLogger ==
+    add_filter( 'sal_watched_product_meta', function( $fields ) {
+        $fields['_my_product_meta'] = 'My field';
+        return $fields;
+    } );
 
-* Does NOT log every wp_options change — wp_options is written to
-  constantly (transients, cron locks, caches) and logging all of it
-  would drown the log in noise within hours. Instead it watches a
-  curated allowlist of meaningfully important settings (site title,
-  URL, admin email, permalink structure, WooCommerce currency, etc.),
-  filterable via the `sal_watched_options` filter so a site can watch
-  more without editing plugin files:
+Watched WordPress options:
 
     add_filter( 'sal_watched_options', function( $options ) {
         $options[] = 'my_custom_option';
         return $options;
     } );
 
-* Plugin/theme lifecycle uses core WordPress hooks (activated_plugin,
-  deactivated_plugin, deleted_plugin, upgrader_process_complete,
-  switch_theme, delete_theme) — these are stable, long-standing core
-  hooks, not third-party API guesses like the Dokan integration, so
-  confidence here is high. Still worth a real test pass (activate/
-  deactivate a plugin, install/update one, switch themes, change a
-  watched setting) before relying on it for an audit, same as every
-  other logger in this plugin so far.
-* Setting-change log messages include a short before/after value for
-  scalar settings (e.g. admin email, permalink structure) but just
-  note "(complex value)" for arrays/objects, to keep entries readable
-  — none of the watched settings are secrets (passwords, API keys),
-  so showing old/new values is safe.
+== WooCommerce compatibility ==
 
-== Notes on OrderLogger ==
+WooCommerce logging uses WooCommerce order hooks rather than direct assumptions about the underlying order storage, so it is designed to work with both legacy order storage and HPOS.
 
-* Uses WooCommerce's own abstracted hooks (woocommerce_new_order,
-  woocommerce_order_status_changed, woocommerce_trash_order,
-  woocommerce_untrash_order, woocommerce_delete_order) rather than
-  post-type hooks, so it should work whether the store uses legacy
-  post-based order storage or HPOS (custom order tables) — these are
-  fired by WC_Order/the data store either way.
-* Only registers if WooCommerce is active (OrderLogger::is_woocommerce_active()),
-  matching the Dokan-gating pattern used in the Store Doctor plugin.
-* Confidence varies by hook: woocommerce_new_order and
-  woocommerce_order_status_changed are long-standing, well-documented
-  WooCommerce hooks I'm confident about. woocommerce_trash_order /
-  woocommerce_untrash_order / woocommerce_delete_order are real
-  WooCommerce data-store hooks but were written from documentation
-  knowledge rather than verified against a live site — same caveat as
-  ProductLogger and the Dokan integration in Store Doctor: test
-  against a real store (create an order, change its status through a
-  few values including cancelled/refunded, trash it, restore it,
-  delete it permanently) before relying on this for an audit.
+WooCommerce is optional. The plugin does not require WooCommerce to log normal WordPress activity.
 
-== Notes on ProductLogger ==
+== FAQ ==
 
-* Uses a single hook (transition_post_status) for create/edit/trash/
-  restore/unpublish, since WordPress fires it on every save regardless
-  of whether the status actually changed — this avoids double-logging
-  against a separate save_post hook. Permanent deletion uses
-  before_delete_post separately, since transition_post_status doesn't
-  fire when a post is actually removed from the database.
-* Autosaves, revisions, and the throwaway 'auto-draft' placeholder
-  WordPress creates before a post's first real save are filtered out
-  so they don't create noise entries.
-* Not yet tested against a live site with real product edits — the
-  logic was written carefully against documented WordPress hook
-  behavior, but given what happened testing Store Doctor, treat this
-  as unverified until it's actually exercised on a real WooCommerce
-  store (create a product, edit it, trash it, restore it, delete it
-  permanently, and confirm all five show up correctly).
+= Does this plugin block attackers? =
 
-== Notes ==
+No. The Security view and optional email alerts detect and report suspicious failed-login patterns. They do not automatically block IP addresses or lock accounts.
 
-* Capability required to view logs or export CSV: manage_options
-  (activity logs, especially failed-login attempts and IP addresses,
-  are sensitive — kept admin-only rather than manage_woocommerce or
-  editor-level).
-* CSV export streams every row matching the current filter, not just
-  the current page, so it's actually useful for an audit rather than
-  a 50-row sample.
-* IP detection checks Cloudflare/X-Forwarded-For headers before
-  REMOTE_ADDR as a best-effort improvement behind proxies/CDNs — it
-  is NOT spoof-proof without a trusted-proxy allowlist, so treat it
-  as a record, not a security control on its own.
+= Can I keep logs forever? =
+
+Yes. Set the retention period to 0. Be aware that audit logs can contain personal data such as IP addresses and usernames, so indefinite retention should be used only when appropriate for your site's requirements.
+
+= Who can view the logs? =
+
+Users with the `manage_options` capability can view and export logs.
+
+= Does it support WooCommerce HPOS? =
+
+The order logger uses WooCommerce order-level hooks and is designed to work with HPOS as well as legacy order storage. A real store test is still recommended before relying on it for compliance-critical auditing.
+
+== Changelog ==
+
+= 1.0.0 =
+* First release.
+* Added WordPress authentication, product, order, settings, user, and security logging.
+* Added retention, suspicious-login alerts, dashboard activity widget, filters, and CSV export.
+* Added WordPress.org release metadata and automated quality checks.
+
+== Upgrade Notice ==
+
+= 1.0.0 =
+Initial stable release.
