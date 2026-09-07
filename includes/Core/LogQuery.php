@@ -13,6 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class LogQuery {
 
+	const MAX_PER_PAGE = 5000;
+
 	/**
 	 * @param array $args {
 	 *     @type int    $user_id
@@ -36,13 +38,16 @@ class LogQuery {
 			'per_page'  => 50,
 		) );
 
+		$page     = max( 1, (int) $args['page'] );
+		$per_page = min( self::MAX_PER_PAGE, max( 1, (int) $args['per_page'] ) );
+
 		list( $where, $params ) = self::build_where( $args );
 
-		$offset = max( 0, ( (int) $args['page'] - 1 ) * (int) $args['per_page'] );
+		$offset = ( $page - 1 ) * $per_page;
 
 		$sql      = "SELECT * FROM {$table} WHERE " . implode( ' AND ', $where )
 			. ' ORDER BY created_at DESC, id DESC LIMIT %d OFFSET %d';
-		$params[] = (int) $args['per_page'];
+		$params[] = $per_page;
 		$params[] = $offset;
 
 		return $wpdb->get_results( $wpdb->prepare( $sql, $params ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQLPlaceholders
