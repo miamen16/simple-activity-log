@@ -33,7 +33,12 @@ $labels = array(
 		<div class="sal-dashboard-card sal-dashboard-card-wide">
 			<div class="sal-dashboard-card-header">
 				<h2><?php esc_html_e( 'Security activity trend', 'simple-activity-log' ); ?></h2>
-				<span class="description"><?php echo esc_html( sprintf( __( '%d detected events', 'simple-activity-log' ), $counts['total'] ) ); ?></span>
+				<span class="description">
+					<?php
+					/* translators: %d: number of detected security events */
+					echo esc_html( sprintf( __( '%d detected events', 'simple-activity-log' ), $counts['total'] ) );
+					?>
+				</span>
 			</div>
 			<div class="sal-trend-list">
 				<?php foreach ( $data['trend'] as $period => $total ) : ?>
