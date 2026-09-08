@@ -10,10 +10,11 @@ $title = $is_ip ? __( 'IP Investigation', 'simple-activity-log' ) : __( 'User In
 	<h1><?php echo esc_html( $title ); ?></h1>
 
 	<form method="get" class="sal-investigation-form">
+		<?php wp_nonce_field( 'sal_investigation' ); ?>
 		<input type="hidden" name="page" value="sal-investigation">
 		<select name="type">
-			<option value="ip" <?php selected( 'ip', isset( $_GET['type'] ) ? sanitize_key( wp_unslash( $_GET['type'] ) ) : '' ); ?>><?php esc_html_e( 'IP Address', 'simple-activity-log' ); ?></option>
-			<option value="username" <?php selected( 'username', isset( $_GET['type'] ) ? sanitize_key( wp_unslash( $_GET['type'] ) ) : '' ); ?>><?php esc_html_e( 'Username', 'simple-activity-log' ); ?></option>
+			<option value="ip" <?php selected( 'ip', $type ); ?>><?php esc_html_e( 'IP Address', 'simple-activity-log' ); ?></option>
+			<option value="username" <?php selected( 'username', $type ); ?>><?php esc_html_e( 'Username', 'simple-activity-log' ); ?></option>
 		</select>
 		<input type="text" name="value" value="<?php echo isset( $value ) ? esc_attr( $value ) : ''; ?>" placeholder="<?php esc_attr_e( 'IP or username', 'simple-activity-log' ); ?>" required>
 		<select name="hours">
