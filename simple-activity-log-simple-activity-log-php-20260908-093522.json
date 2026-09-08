@@ -1,0 +1,228 @@
+{
+    "generated_at": "2026-09-08 09:35:22",
+    "plugin": "Simple Activity Log",
+    "results": {
+        "includes/Core/IncidentAlertManager.php": [
+            {
+                "message": "Multiple placeholders in translatable strings should be ordered. Expected \"%1$s, %2$s\", but got \"%s, %s\" in '[%s] Security incident: %s'.",
+                "code": "WordPress.WP.I18n.UnorderedPlaceholdersText",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIncidentAlertManager.php&line=44",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#variables",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 44,
+                "column": 17
+            },
+            {
+                "message": "The $text parameter must not contain interpolated variables or expressions. Found: $s",
+                "code": "WordPress.WP.I18n.InterpolatedVariableText",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIncidentAlertManager.php&line=51",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/",
+                "severity": 7,
+                "type": "ERROR",
+                "line": 51,
+                "column": 17
+            },
+            {
+                "message": "The $text parameter must not contain interpolated variables or expressions. Found: $d",
+                "code": "WordPress.WP.I18n.InterpolatedVariableText",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIncidentAlertManager.php&line=51",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/",
+                "severity": 7,
+                "type": "ERROR",
+                "line": 51,
+                "column": 17
+            },
+            {
+                "message": "The $text parameter must not contain interpolated variables or expressions. Found: $s",
+                "code": "WordPress.WP.I18n.InterpolatedVariableText",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIncidentAlertManager.php&line=51",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/",
+                "severity": 7,
+                "type": "ERROR",
+                "line": 51,
+                "column": 17
+            },
+            {
+                "message": "The $text parameter must not contain interpolated variables or expressions. Found: $s",
+                "code": "WordPress.WP.I18n.InterpolatedVariableText",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIncidentAlertManager.php&line=51",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/",
+                "severity": 7,
+                "type": "ERROR",
+                "line": 51,
+                "column": 17
+            },
+            {
+                "message": "The $text parameter must not contain interpolated variables or expressions. Found: $d",
+                "code": "WordPress.WP.I18n.InterpolatedVariableText",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIncidentAlertManager.php&line=51",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/",
+                "severity": 7,
+                "type": "ERROR",
+                "line": 51,
+                "column": 17
+            }
+        ],
+        "includes/Core/IncidentManager.php": [
+            {
+                "message": "A function call to __() with texts containing placeholders was found, but was not accompanied by a \"translators:\" comment on the line above to clarify the meaning of the placeholders.",
+                "code": "WordPress.WP.I18n.MissingTranslatorsComment",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIncidentManager.php&line=43",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#descriptions",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 43,
+                "column": 28
+            }
+        ],
+        "templates/incident-detail.php": [
+            {
+                "message": "A function call to __() with texts containing placeholders was found, but was not accompanied by a \"translators:\" comment on the line above to clarify the meaning of the placeholders.",
+                "code": "WordPress.WP.I18n.MissingTranslatorsComment",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Ftemplates%2Fincident-detail.php&line=26",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#descriptions",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 26,
+                "column": 66
+            }
+        ],
+        "templates/security-dashboard.php": [
+            {
+                "message": "A function call to __() with texts containing placeholders was found, but was not accompanied by a \"translators:\" comment on the line above to clarify the meaning of the placeholders.",
+                "code": "WordPress.WP.I18n.MissingTranslatorsComment",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Ftemplates%2Fsecurity-dashboard.php&line=36",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#descriptions",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 36,
+                "column": 73
+            }
+        ],
+        "includes/Core/LogQuery.php": [
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=87",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 87,
+                "column": 16
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=87",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 87,
+                "column": 16
+            },
+            {
+                "message": "Unescaped parameter $sql used in $wpdb-&gt;get_results()\\n$sql assigned unsafely at line 83.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=87",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 87,
+                "column": 17
+            },
+            {
+                "message": "Use placeholders and $wpdb->prepare(); found $sql",
+                "code": "WordPress.DB.PreparedSQL.NotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=88",
+                "docs": "",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 88,
+                "column": 20
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=114",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 114,
+                "column": 17
+            },
+            {
+                "message": "Direct database call without caching detected. Consider using wp_cache_get() / wp_cache_set() or wp_cache_delete().",
+                "code": "WordPress.DB.DirectDatabaseQuery.NoCaching",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=114",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 114,
+                "column": 17
+            },
+            {
+                "message": "Unescaped parameter $sql used in $wpdb-&gt;get_results()\\n$sql assigned unsafely at line 110.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=114",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 114,
+                "column": 18
+            },
+            {
+                "message": "Use placeholders and $wpdb->prepare(); found $sql",
+                "code": "WordPress.DB.PreparedSQL.NotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=115",
+                "docs": "",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 115,
+                "column": 20
+            }
+        ],
+        "templates/investigation.php": [
+            {
+                "message": "Processing form data without nonce verification.",
+                "code": "WordPress.Security.NonceVerification.Recommended",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Ftemplates%2Finvestigation.php&line=15",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 15,
+                "column": 52
+            },
+            {
+                "message": "Processing form data without nonce verification.",
+                "code": "WordPress.Security.NonceVerification.Recommended",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Ftemplates%2Finvestigation.php&line=15",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 15,
+                "column": 96
+            },
+            {
+                "message": "Processing form data without nonce verification.",
+                "code": "WordPress.Security.NonceVerification.Recommended",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Ftemplates%2Finvestigation.php&line=16",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 16,
+                "column": 64
+            },
+            {
+                "message": "Processing form data without nonce verification.",
+                "code": "WordPress.Security.NonceVerification.Recommended",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Ftemplates%2Finvestigation.php&line=16",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 16,
+                "column": 108
+            }
+        ]
+    }
+}
