@@ -79,14 +79,22 @@ class LogQuery {
 		$hours = max( 1, min( 720, (int) $hours ) );
 		$limit = max( 1, min( 200, (int) $limit ) );
 		$since = wp_date( 'Y-m-d H:i:s', time() - ( $hours * HOUR_IN_SECONDS ) );
+		$cache_key = 'sal_security_events_' . md5( $hours . '|' . $limit . '|' . $since );
+		$cached = wp_cache_get( $cache_key, 'simple-activity-log' );
+		if ( false !== $cached ) {
+			return $cached;
+		}
 
 		$sql = 'SELECT * FROM ' . $table
 			. ' WHERE action = %s AND created_at >= %s'
 			. ' ORDER BY created_at DESC, id DESC LIMIT %d';
 
-		return $wpdb->get_results(
+		$events = $wpdb->get_results(
 			$wpdb->prepare( $sql, 'suspicious_activity', $since, $limit )
 		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
+
+		wp_cache_set( $cache_key, $events, 'simple-activity-log', MINUTE_IN_SECONDS );
+		return $events;
 	}
 
 	/**
@@ -107,6 +115,12 @@ class LogQuery {
 			$format = '%Y-%m-%d 00:00:00';
 		}
 
+		$cache_key = 'sal_security_trend_' . md5( $hours . '|' . $since );
+		$cached = wp_cache_get( $cache_key, 'simple-activity-log' );
+		if ( false !== $cached ) {
+			return $cached;
+		}
+
 		$sql = 'SELECT DATE_FORMAT(created_at, %s) AS period, COUNT(*) AS total FROM ' . $table
 			. ' WHERE action = %s AND created_at >= %s'
 			. ' GROUP BY period ORDER BY period ASC';
@@ -120,6 +134,7 @@ class LogQuery {
 			$trend[ $row->period ] = (int) $row->total;
 		}
 
+		wp_cache_set( $cache_key, $trend, 'simple-activity-log', MINUTE_IN_SECONDS );
 		return $trend;
 	}
 
