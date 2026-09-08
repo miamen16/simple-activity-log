@@ -89,9 +89,9 @@ class LogQuery {
 			. ' WHERE action = %s AND created_at >= %s'
 			. ' ORDER BY created_at DESC, id DESC LIMIT %d';
 
-		$events = $wpdb->get_results(
-			$wpdb->prepare( $sql, 'suspicious_activity', $since, $limit )
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
+		$prepared_sql = $wpdb->prepare( $sql, 'suspicious_activity', $since, $limit );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
+		$events = $wpdb->get_results( $prepared_sql );
 
 		wp_cache_set( $cache_key, $events, 'simple-activity-log', MINUTE_IN_SECONDS );
 		return $events;
@@ -125,9 +125,9 @@ class LogQuery {
 			. ' WHERE action = %s AND created_at >= %s'
 			. ' GROUP BY period ORDER BY period ASC';
 
-		$rows = $wpdb->get_results(
-			$wpdb->prepare( $sql, $format, 'suspicious_activity', $since )
-		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
+		$prepared_sql = $wpdb->prepare( $sql, $format, 'suspicious_activity', $since );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders, PluginCheck.Security.DirectDB.UnescapedDBParameter
+		$rows = $wpdb->get_results( $prepared_sql );
 
 		$trend = array();
 		foreach ( $rows as $row ) {
