@@ -1,0 +1,122 @@
+{
+    "generated_at": "2026-09-08 11:25:32",
+    "plugin": "Simple Activity Log",
+    "results": {
+        "includes/Core/IPBlocklist.php": [
+            {
+                "message": "A function call to __() with texts containing placeholders was found, but was not accompanied by a \"translators:\" comment on the line above to clarify the meaning of the placeholders.",
+                "code": "WordPress.WP.I18n.MissingTranslatorsComment",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIPBlocklist.php&line=45",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#descriptions",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 45,
+                "column": 54
+            },
+            {
+                "message": "A function call to __() with texts containing placeholders was found, but was not accompanied by a \"translators:\" comment on the line above to clarify the meaning of the placeholders.",
+                "code": "WordPress.WP.I18n.MissingTranslatorsComment",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIPBlocklist.php&line=62",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#descriptions",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 62,
+                "column": 56
+            },
+            {
+                "message": "A function call to __() with texts containing placeholders was found, but was not accompanied by a \"translators:\" comment on the line above to clarify the meaning of the placeholders.",
+                "code": "WordPress.WP.I18n.MissingTranslatorsComment",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIPBlocklist.php&line=104",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#descriptions",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 104,
+                "column": 58
+            },
+            {
+                "message": "Multiple placeholders in translatable strings should be ordered. Expected \"%1$s, %2$d\", but got \"%s, %d\" in 'IP address %s was automatically blocked after %d failed login attempts.'.",
+                "code": "WordPress.WP.I18n.UnorderedPlaceholdersText",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FIPBlocklist.php&line=104",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#variables",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 104,
+                "column": 62
+            }
+        ],
+        "templates/settings.php": [
+            {
+                "message": "A function call to esc_html__() with texts containing placeholders was found, but was not accompanied by a \"translators:\" comment on the line above to clarify the meaning of the placeholders.",
+                "code": "WordPress.WP.I18n.MissingTranslatorsComment",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Ftemplates%2Fsettings.php&line=30",
+                "docs": "https://developer.wordpress.org/plugins/internationalization/how-to-internationalize-your-plugin/#descriptions",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 30,
+                "column": 340
+            }
+        ],
+        "includes/Core/LogQuery.php": [
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=92",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 92,
+                "column": 19
+            },
+            {
+                "message": "Unescaped parameter $sql used in $wpdb-&gt;get_results()\\n$sql assigned unsafely at line 88.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=92",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 92,
+                "column": 20
+            },
+            {
+                "message": "Use placeholders and $wpdb->prepare(); found $sql",
+                "code": "WordPress.DB.PreparedSQL.NotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=93",
+                "docs": "",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 93,
+                "column": 20
+            },
+            {
+                "message": "Use of a direct database call is discouraged.",
+                "code": "WordPress.DB.DirectDatabaseQuery.DirectQuery",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=128",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 128,
+                "column": 17
+            },
+            {
+                "message": "Unescaped parameter $sql used in $wpdb-&gt;get_results()\\n$sql assigned unsafely at line 124.",
+                "code": "PluginCheck.Security.DirectDB.UnescapedDBParameter",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=128",
+                "docs": "",
+                "severity": 5,
+                "type": "WARNING",
+                "line": 128,
+                "column": 18
+            },
+            {
+                "message": "Use placeholders and $wpdb->prepare(); found $sql",
+                "code": "WordPress.DB.PreparedSQL.NotPrepared",
+                "link": "https://aura-demo.com/websites/tmhg/wp-admin/plugin-editor.php?plugin=simple-activity-log%2Fsimple-activity-log.php&file=simple-activity-log%2Fincludes%2FCore%2FLogQuery.php&line=129",
+                "docs": "",
+                "severity": 5,
+                "type": "ERROR",
+                "line": 129,
+                "column": 20
+            }
+        ]
+    }
+}
