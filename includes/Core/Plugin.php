@@ -39,6 +39,7 @@ class Plugin {
 			new \SAL\Admin\SecurityPage();
 			new \SAL\Admin\IncidentsPage();
 			new \SAL\Admin\InvestigationPage();
+			new \SAL\Admin\IPBlocklistPage();
 			new \SAL\Admin\SettingsPage();
 			new \SAL\Admin\DashboardWidget();
 		}
