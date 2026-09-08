@@ -33,22 +33,30 @@ class IncidentAlertManager {
 		}
 
 		$settings = AlertPolicy::settings();
-		$key = 'sal_incident_alert_' . absint( $incident_id );
+		$key      = 'sal_incident_alert_' . absint( $incident_id );
 
 		if ( get_transient( $key ) ) {
 			return;
 		}
 
 		$subject = sprintf(
-			/* translators: %s: site name */
-			__( '[%s] Security incident: %s', 'simple-activity-log' ),
+			/* translators: 1: site name, 2: incident title */
+			__( '[%1$s] Security incident: %2$s', 'simple-activity-log' ),
 			get_bloginfo( 'name' ),
 			$incident->title
 		);
 
 		$message = sprintf(
-			/* translators: 1: severity, 2: score, 3: username, 4: IP address, 5: occurrences */
-			__( "A security incident requires attention.\n\nSeverity: %1$s\nRisk score: %2$d/100\nUsername: %3$s\nIP address: %4$s\nOccurrences: %5$d\n\nReview the incident in the WordPress admin Security > Incidents page.", 'simple-activity-log' ),
+			/* translators: 1: severity, 2: risk score, 3: username, 4: IP address, 5: occurrence count */
+			__( 'A security incident requires attention.
+
+Severity: %1$s
+Risk score: %2$d/100
+Username: %3$s
+IP address: %4$s
+Occurrences: %5$d
+
+Review the incident in the WordPress admin Security > Incidents page.', 'simple-activity-log' ),
 			ucfirst( sanitize_key( $incident->severity ) ),
 			absint( $incident->score ),
 			$incident->username ? $incident->username : __( 'Unknown', 'simple-activity-log' ),
