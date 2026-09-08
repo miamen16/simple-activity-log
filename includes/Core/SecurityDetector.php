@@ -16,6 +16,27 @@ class SecurityDetector {
 
 	public static function register() {
 		add_action( 'sal_logged', array( __CLASS__, 'on_logged' ), 20, 4 );
+		add_filter( 'authenticate', array( __CLASS__, 'block_authentication' ), 1, 3 );
+	}
+
+	/**
+	 * Stop authentication from an explicitly blocked IP before credential checks.
+	 *
+	 * @param mixed  $user     User or WP_Error from earlier authentication handlers.
+	 * @param string $username Submitted username.
+	 * @param string $password Submitted password.
+	 * @return mixed
+	 */
+	public static function block_authentication( $user, $username, $password ) {
+		$ip = Logger::get_client_ip();
+		if ( ! $ip || ! IPBlocklist::is_blocked( $ip ) ) {
+			return $user;
+		}
+
+		return new \WP_Error(
+			'sal_ip_blocked',
+			__( 'Authentication from this IP address has been blocked.', 'simple-activity-log' )
+		);
 	}
 
 	public static function on_logged( $log_id, $action, $message, $args ) {
@@ -31,6 +52,7 @@ class SecurityDetector {
 
 		if ( $ip ) {
 			$by_ip = self::find_by_ip( $ip, $window );
+			IPBlocklist::maybe_auto_block( $ip, $by_ip['attempts'] );
 			if ( $by_ip['attempts'] >= $threshold ) {
 				$signals[] = array(
 					'type'               => 'ip_bruteforce',
@@ -58,15 +80,7 @@ class SecurityDetector {
 		$score = self::score( $signals );
 		$level = self::risk_level( $score );
 
-		IncidentManager::create_or_increment(
-			'login_attack',
-			$level,
-			$score,
-			$username,
-			$ip,
-			$signals,
-			$log_id
-		);
+		IncidentManager::create_or_increment( 'login_attack', $level, $score, $username, $ip, $signals, $log_id );
 
 		Logger::log(
 			'suspicious_activity',
