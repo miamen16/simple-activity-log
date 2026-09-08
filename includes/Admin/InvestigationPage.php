@@ -28,6 +28,11 @@ class InvestigationPage {
 			wp_die( esc_html__( 'You do not have permission to view this page.', 'simple-activity-log' ) );
 		}
 
+		$has_query = isset( $_GET['type'] ) || isset( $_GET['value'] ) || isset( $_GET['hours'] );
+		if ( $has_query ) {
+			check_admin_referer( 'sal_investigation' );
+		}
+
 		$type  = isset( $_GET['type'] ) ? sanitize_key( wp_unslash( $_GET['type'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$value = isset( $_GET['value'] ) ? sanitize_text_field( wp_unslash( $_GET['value'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$hours = isset( $_GET['hours'] ) ? absint( $_GET['hours'] ) : 168; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
