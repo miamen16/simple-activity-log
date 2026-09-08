@@ -6,13 +6,14 @@ use SAL\Core\Retention;
 use SAL\Core\AlertManager;
 use SAL\Core\AlertPolicy;
 use SAL\Core\SecurityAnalyzer;
+use SAL\Core\IPBlocklist;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 /**
- * Settings page for retention and security alerts.
+ * Settings page for retention, alerts, and security response.
  */
 class SettingsPage {
 
@@ -37,6 +38,8 @@ class SettingsPage {
 		$alert_email    = get_option( AlertManager::OPTION_EMAIL, '' );
 		$threshold      = SecurityAnalyzer::threshold();
 		$alert_settings = AlertPolicy::settings();
+		$auto_block     = IPBlocklist::auto_block_enabled();
+		$auto_threshold = IPBlocklist::auto_block_threshold();
 
 		include SAL_PATH . 'templates/settings.php';
 	}
@@ -67,6 +70,13 @@ class SettingsPage {
 		$cooldown = isset( $_POST['sal_alert_cooldown_minutes'] ) ? absint( wp_unslash( $_POST['sal_alert_cooldown_minutes'] ) ) : 60;
 		$cooldown = max( 5, min( 1440, $cooldown ) );
 		update_option( 'sal_alert_cooldown_minutes', $cooldown );
+
+		$auto_block = isset( $_POST['sal_auto_block_enabled'] ) ? '1' : '0';
+		update_option( IPBlocklist::OPTION_AUTO_BLOCK, $auto_block );
+
+		$auto_threshold = isset( $_POST['sal_auto_block_threshold'] ) ? absint( wp_unslash( $_POST['sal_auto_block_threshold'] ) ) : 20;
+		$auto_threshold = max( 5, min( 1000, $auto_threshold ) );
+		update_option( IPBlocklist::OPTION_AUTO_THRESHOLD, $auto_threshold );
 
 		wp_safe_redirect( add_query_arg( array( 'page' => 'sal-settings', 'updated' => '1' ), admin_url( 'admin.php' ) ) );
 		exit;
