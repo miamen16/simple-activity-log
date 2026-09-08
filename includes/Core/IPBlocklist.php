@@ -42,6 +42,7 @@ class IPBlocklist {
 			self::save_list( self::OPTION_BLOCKLIST, $list );
 		}
 
+		/* translators: %s: IP address. */
 		Logger::log( 'security_ip_blocked', sprintf( __( 'IP address %s was blocked.', 'simple-activity-log' ), $ip ), array( 'ip_address' => $ip, 'object_type' => 'security', 'meta' => array( 'reason' => sanitize_text_field( $reason ), 'source' => 'manual' ) ) );
 		return true;
 	}
@@ -59,6 +60,7 @@ class IPBlocklist {
 		}
 
 		self::save_list( self::OPTION_BLOCKLIST, $new );
+		/* translators: %s: IP address. */
 		Logger::log( 'security_ip_unblocked', sprintf( __( 'IP address %s was unblocked.', 'simple-activity-log' ), $ip ), array( 'ip_address' => $ip, 'object_type' => 'security' ) );
 		return true;
 	}
@@ -101,7 +103,8 @@ class IPBlocklist {
 		}
 		$blocked = self::block( $ip, 'automatic threshold' );
 		if ( $blocked ) {
-			Logger::log( 'security_auto_block', sprintf( __( 'IP address %s was automatically blocked after %d failed login attempts.', 'simple-activity-log' ), $ip, (int) $attempts ), array( 'ip_address' => $ip, 'object_type' => 'security', 'meta' => array( 'attempts' => (int) $attempts, 'threshold' => $threshold, 'source' => 'automatic' ) ) );
+			/* translators: 1: IP address, 2: number of failed login attempts. */
+			Logger::log( 'security_auto_block', sprintf( __( 'IP address %1$s was automatically blocked after %2$d failed login attempts.', 'simple-activity-log' ), $ip, (int) $attempts ), array( 'ip_address' => $ip, 'object_type' => 'security', 'meta' => array( 'attempts' => (int) $attempts, 'threshold' => $threshold, 'source' => 'automatic' ) ) );
 		}
 		return $blocked;
 	}
