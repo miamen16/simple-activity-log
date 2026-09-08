@@ -15,15 +15,20 @@ $format_date = static function ( $value ) {
 
 $severity = sanitize_key( $incident->severity );
 $status   = sanitize_key( $incident->status );
-$ip_url   = admin_url( 'admin.php?page=sal-investigation&type=ip&value=' . rawurlencode( $incident->ip_address ) );
-$user_url = admin_url( 'admin.php?page=sal-investigation&type=username&value=' . rawurlencode( $incident->username ) );
+$ip_url   = wp_nonce_url( admin_url( 'admin.php?page=sal-investigation&type=ip&value=' . rawurlencode( $incident->ip_address ) ), 'sal_investigation' );
+$user_url = wp_nonce_url( admin_url( 'admin.php?page=sal-investigation&type=username&value=' . rawurlencode( $incident->username ) ), 'sal_investigation' );
 ?>
 <div class="wrap sal-wrap">
 	<p><a href="<?php echo esc_url( admin_url( 'admin.php?page=sal-incidents' ) ); ?>">&larr; <?php esc_html_e( 'Back to incidents', 'simple-activity-log' ); ?></a></p>
 
 	<div class="sal-incident-header">
 		<div>
-			<p class="description"><?php echo esc_html( sprintf( __( 'Incident #%d', 'simple-activity-log' ), absint( $incident->id ) ) ); ?></p>
+			<p class="description">
+				<?php
+				/* translators: %d: incident ID */
+				echo esc_html( sprintf( __( 'Incident #%d', 'simple-activity-log' ), absint( $incident->id ) ) );
+				?>
+			</p>
 			<h1><?php echo esc_html( $incident->title ); ?></h1>
 		</div>
 		<div class="sal-incident-badges">
