@@ -40,6 +40,7 @@ class IncidentManager {
 			$incident_id = (int) $existing->id;
 		} else {
 			$title = $username
+				/* translators: %s: username associated with the suspicious activity */
 				? sprintf( __( 'Suspicious activity for user %s', 'simple-activity-log' ), $username )
 				: __( 'Suspicious activity detected', 'simple-activity-log' );
 
@@ -119,8 +120,8 @@ class IncidentManager {
 		);
 
 		foreach ( $rows as $row ) {
-			$total = (int) $row->total;
-			$status = sanitize_key( $row->status );
+			$total    = (int) $row->total;
+			$status   = sanitize_key( $row->status );
 			$severity = sanitize_key( $row->severity );
 
 			if ( isset( $stats[ $status ] ) ) {
